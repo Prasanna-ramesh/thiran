@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2024",
+
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "noImplicitAny": true,
+
+    "rootDir": "./packages",
+
+    "module": "NodeNext",
+    "moduleResolution": "nodenext"
+  }
+}

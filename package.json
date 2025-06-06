@@ -1,0 +1,21 @@
+{
+  "name": "confiq",
+  "version": "0.0.1",
+  "description": "Spring inspired config manager",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Prasanna Ramesh",
+  "license": "MIT",
+  "packageManager": "pnpm@10.11.0",
+  "devDependencies": {
+    "@types/node": "22.15.29",
+    "eslint": "9.28.0",
+    "prettier": "3.5.3",
+    "typescript": "5.8.3"
+  }
+}

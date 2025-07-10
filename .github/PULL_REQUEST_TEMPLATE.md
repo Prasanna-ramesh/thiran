@@ -1,6 +1,6 @@
 ### What
 
-<describe what need of this PR>
+<describe the need of this PR>
 
 ### How
 

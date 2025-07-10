@@ -1,0 +1,16 @@
+{
+	"include": ["lib"],
+	"exclude": ["node_modules"],
+	"compilerOptions": {
+		"target": "ES2024",
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitAny": true,
+		"rootDir": "./lib",
+		"module": "NodeNext",
+		"moduleResolution": "nodenext",
+		"paths": {
+			"@/lib": ["./lib/*"]
+		}
+	}
+}

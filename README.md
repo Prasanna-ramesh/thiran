@@ -1,5 +1,7 @@
-## Confiq
+## Thiran
 
-Spring inspiured config manager
+A Spring-inspired configuration manager to efficiently manage configurations in Node.js.
 
-TODO: Add rest of the details
+## TODO
+
+Add the rest of the details with examples and FAQs

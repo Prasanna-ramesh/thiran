@@ -1,7 +1,7 @@
 ### What
 
-<describe the need of this PR>
+<Describe the need for this PR>
 
 ### How
 
-<describe how you implemented it>
+<Describe how you implemented it>

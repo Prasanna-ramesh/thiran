@@ -6,7 +6,7 @@
 		"node": ">=22"
 	},
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "vitest run",
 		"lint": "biome lint",
 		"format": "biome format . --write"
 	},
@@ -21,6 +21,7 @@
 		"@types/node": "22.15.29",
 		"tsc-alias": "1.8.16",
 		"typescript": "5.8.3",
+		"vite-tsconfig-paths": "5.1.4",
 		"vitest": "3.2.4"
 	},
 	"dependencies": {

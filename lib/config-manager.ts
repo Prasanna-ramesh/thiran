@@ -12,16 +12,16 @@ export class ConfigManager {
 	private loaderManager: LoaderManager;
 
 	constructor(
-		readonly configProperties: ConfigProperties = defaultConfigProperties,
-		readonly strategies: Strategies = {
-			loaders: {
-				yaml: new YamlLoaderStrategy(),
-				json: new JsonLoaderStrategy(),
-			},
+			readonly configProperties: ConfigProperties = defaultConfigProperties,
+			readonly strategies: Strategies = {
+				loaders: {
+					yaml: new YamlLoaderStrategy(),
+					json: new JsonLoaderStrategy(),
+				},
+			}
+		) {
+			this.loaderManager = new LoaderManager(strategies.loaders);
 		}
-	) {
-		this.loaderManager = new LoaderManager(strategies.loaders);
-	}
 
 	load() {
 		const configurations = this.loaderManager.loadConfigurations();

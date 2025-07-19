@@ -6,5 +6,9 @@ export default defineConfig({
 	test: {
 		include: ['**/*.test.*'],
 		globals: true,
+		coverage: {
+			reportsDirectory: 'coverage',
+			reporter: ['lcov', 'text'],
+		},
 	},
 });

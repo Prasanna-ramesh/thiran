@@ -44,4 +44,4 @@ jobs:
           run: pnpm install
 
         - name: Run linter and formatter
-          run: pnpm lint
+          run: pnpm biome:ci

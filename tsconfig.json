@@ -10,7 +10,10 @@
 		"module": "NodeNext",
 		"moduleResolution": "nodenext",
 		"paths": {
-			"@/lib": ["./lib/*"]
-		}
+			"@/lib/*": ["./lib/*"]
+		},
+		"esModuleInterop": true,
+		"outDir": "dist",
+		"types": ["vitest/globals"]
 	}
 }

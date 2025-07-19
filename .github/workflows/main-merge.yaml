@@ -1,7 +1,9 @@
-name: CI
+name: main
 
 on:
-  pull_request
+  push:
+    branches:
+        - main
 
 jobs:
   test:
@@ -26,20 +28,3 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: Prasanna-ramesh/thiran
-
-  lint:
-      runs-on: ubuntu-latest
-      steps:
-        - uses: actions/checkout@v3
-
-        - uses: pnpm/action-setup@v4
-
-        - uses: actions/setup-node@v3
-          with:
-            node-version: '22'
-
-        - name: Install dependencies
-          run: pnpm install
-
-        - name: Run linter and formatter
-          run: pnpm biome:ci

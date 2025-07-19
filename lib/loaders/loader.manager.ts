@@ -10,10 +10,10 @@ export class LoaderManager {
 		json: ['.json'],
 	};
 
-	constructor(readonly strategies: Strategies['loaders']) {}
+	constructor(private readonly loader: Strategies['loaders']) {}
 
 	/**
-	 * Resolves the location of the config file and invokes load() method
+	 * Invokes loader strategy based on the file extension
 	 *
 	 * @internal
 	 */
@@ -24,13 +24,13 @@ export class LoaderManager {
 			const isYaml = this.supportedExtensions.yaml.some((extension) => configurationFileLocation.endsWith(extension));
 
 			if (isYaml) {
-				return this.strategies.yaml.loadConfiguration(configurationFileLocation);
+				return this.loader.yaml.loadConfiguration(configurationFileLocation);
 			}
 
 			const isJson = this.supportedExtensions.json.some((extension) => configurationFileLocation.endsWith(extension));
 
 			if (isJson) {
-				return this.strategies.json.loadConfiguration(configurationFileLocation);
+				return this.loader.json.loadConfiguration(configurationFileLocation);
 			}
 
 			throw new Error(

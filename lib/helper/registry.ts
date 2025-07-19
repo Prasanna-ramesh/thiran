@@ -25,7 +25,7 @@ class Registry {
 		const existingValue = this.store.get(key);
 
 		if (existingValue) {
-			throw new Error(`${key} is already available in the store`);
+			throw new Error(`${key} already exists in the store`);
 		}
 
 		this.store.set(key, value);

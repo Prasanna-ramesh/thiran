@@ -12,18 +12,22 @@ export class ConfigManager {
 	private loaderManager: LoaderManager;
 
 	constructor(
-		readonly configProperties: ConfigProperties = defaultConfigProperties,
-		readonly strategies: Strategies = {
+		private readonly configProperties: ConfigProperties = defaultConfigProperties,
+		private readonly strategies: Strategies = {
 			loaders: {
 				yaml: new YamlLoaderStrategy(),
 				json: new JsonLoaderStrategy(),
 			},
 		}
 	) {
-		this.loaderManager = new LoaderManager(strategies.loaders);
+		this.loaderManager = new LoaderManager(this.strategies.loaders);
 	}
 
 	load() {
+		// setup
+		this.camelizeConfigurationProperties();
+		this.camelizeEnvironmentVariables();
+
 		const configurations = this.loaderManager.loadConfigurations();
 
 		// TODO: transform and merge configurations
@@ -33,7 +37,7 @@ export class ConfigManager {
 		registry.clear();
 	}
 
-	private camelizeConfigVariables() {
+	private camelizeConfigurationProperties() {
 		(Object.keys(this.configProperties) as (keyof ConfigProperties)[]).forEach((key) => {
 			this.configProperties[key] = {
 				...this.configProperties[key],

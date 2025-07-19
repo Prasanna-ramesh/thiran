@@ -10,5 +10,6 @@ export default defineConfig({
 			reportsDirectory: 'coverage',
 			reporter: ['lcov', 'text'],
 		},
+		mockReset: true,
 	},
 });

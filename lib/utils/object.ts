@@ -1,14 +1,14 @@
 import { camelCase } from './formatter';
 
 /**
- * Function that asserts if a given unknown type is an object using type guard
+ * Function that asserts if a given unknown value is an object
  *
- * @param object Actual object
+ * @param value Actual object
  *
  * @internal
  */
-export const isObject = (object: unknown): object is Record<string, unknown> => {
-	return Boolean(object) && !Array.isArray(object) && typeof object === 'object';
+export const isObject = (value: unknown): value is Record<string, unknown> => {
+	return Boolean(value) && !Array.isArray(value) && typeof value === 'object';
 };
 
 /**
@@ -54,14 +54,20 @@ export const camelizeAndMerge = (
 	segments: string[] = []
 ): Record<string, unknown> => {
 	if (!isObject(source)) {
-		throw new Error('[objectUtil.camelizeAndMerge] Invalid source object');
+		if (segments.length === 0) {
+			throw new Error('[objectUtil.camelizeAndMerge] Invalid source object');
+		} else {
+			return source as Record<string, unknown>;
+		}
 	}
 
 	Object.entries(source).forEach(([key, value]) => {
+		const newSegments: string[] = [...segments, camelCase(key)];
+
 		if (typeof value === 'object') {
-			camelizeAndMerge(target, source, [...segments, camelCase(key)]);
+			camelizeAndMerge(target, value, newSegments);
 		} else {
-			set(target, segments, value);
+			set(target, newSegments, value);
 		}
 	});
 
@@ -77,7 +83,7 @@ export const camelizeAndMerge = (
  *
  * @internal
  */
-const set = (object: Record<string, unknown>, segments: string[], value: unknown): Record<string, unknown> => {
+export const set = (object: Record<string, unknown>, segments: string[], value: unknown): Record<string, unknown> => {
 	if (!isObject(object)) {
 		throw new Error('[objectUtil.set] Invalid object');
 	}

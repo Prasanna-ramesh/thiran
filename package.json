@@ -7,7 +7,9 @@
 	},
 	"scripts": {
 		"test": "vitest run",
-		"biome:ci": "biome ci"
+		"test:coverage": "vitest run --coverage",
+		"lint:ci": "biome ci",
+		"format": "biome format . --write"
 	},
 	"keywords": [
 		"Config Manager"

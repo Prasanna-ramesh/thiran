@@ -1,7 +1,7 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"files": {
-		"includes": ["**", "!dist"]
+		"includes": ["**", "!dist", "!coverage"]
 	},
 	"linter": {
 		"rules": {
@@ -11,6 +11,12 @@
 	"formatter": {
 		"lineWidth": 120,
 		"formatWithErrors": false
+	},
+	"json": {
+		"formatter": {
+			"indentWidth": 1,
+			"indentStyle": "tab"
+		}
 	},
 	"javascript": {
 		"formatter": {

@@ -20,8 +20,6 @@ const jsonLoaderMock = {
 } satisfies ILoader;
 
 describe('LoaderManager', () => {
-	const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
-
 	beforeEach(() => {
 		registry.safeSet('configProperties', defaultConfigProperties);
 	});
@@ -38,6 +36,8 @@ describe('LoaderManager', () => {
 		registry.safeSet('environmentVariables', {
 			[defaultConfigProperties.defaultConfigurationFile.name]: defaultConfigurationFileName,
 		});
+
+		const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
 		vi.mocked(existsSync).mockReturnValue(true);
 
 		// when
@@ -52,6 +52,8 @@ describe('LoaderManager', () => {
 		registry.safeSet('environmentVariables', {
 			[defaultConfigProperties.defaultConfigurationFile.name]: 'application.json',
 		});
+
+		const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
 		vi.mocked(existsSync).mockReturnValue(true);
 
 		// when
@@ -66,6 +68,8 @@ describe('LoaderManager', () => {
 		registry.safeSet('environmentVariables', {
 			[defaultConfigProperties.defaultConfigurationFile.name]: 'application.txt',
 		});
+
+		const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
 		vi.mocked(existsSync).mockReturnValue(true);
 
 		// when / then

@@ -57,7 +57,7 @@ export const camelizeAndMerge = (
 		throw new Error('[objectUtil.camelizeAndMerge] Invalid source object');
 	}
 
-	Object.entries(source).map(([key, value]) => {
+	Object.entries(source).forEach(([key, value]) => {
 		if (typeof value === 'object') {
 			camelizeAndMerge(target, source, [...segments, camelCase(key)]);
 		} else {

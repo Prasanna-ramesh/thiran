@@ -1,8 +1,10 @@
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { resolve } from 'app-root-path';
-import { registry } from '../helper/registry';
+import { DEFAULT_PROFILE_NAME } from '../constants/default-config';
+import { registry, type Store } from '../helper/registry';
 import type { Strategies, SupportedFiles } from '../types';
+import { camelizeAndMerge, get, isObject } from '../utils/object';
 
 export class LoaderManager {
 	private readonly supportedExtensions: Record<SupportedFiles, string[]> = {
@@ -10,33 +12,49 @@ export class LoaderManager {
 		json: ['.json'],
 	};
 
-	constructor(private readonly loader: Strategies['loaders']) {}
+	private readonly environmentVariables: Store['environmentVariables'];
+	private readonly configProperties: Store['configProperties'];
+	private readonly activeProfiles: string[];
+
+	constructor(private readonly loader: Strategies['loaders']) {
+		this.environmentVariables = registry.strictGet('environmentVariables');
+		this.configProperties = registry.strictGet('configProperties');
+
+		const { activeProfiles } = this.configProperties;
+		this.activeProfiles = (this.environmentVariables[activeProfiles.name] ?? activeProfiles.defaultValue)
+			?.split(',')
+			.map((value) => value.trim()) ?? [DEFAULT_PROFILE_NAME];
+	}
 
 	/**
 	 * Invokes loader strategy based on the file extension
 	 *
 	 * @internal
 	 */
-	loadConfigurations(): unknown[] {
+	loadConfigurations(): Record<string, unknown> {
 		const configurationFilesLocation = this.getConfigurationFilesLocation();
 
-		return configurationFilesLocation.map((configurationFileLocation) => {
-			const isYaml = this.supportedExtensions.yaml.some((extension) => configurationFileLocation.endsWith(extension));
+		return configurationFilesLocation
+			.flatMap((configurationFileLocation) => {
+				const isYaml = this.supportedExtensions.yaml.some((extension) => configurationFileLocation.endsWith(extension));
 
-			if (isYaml) {
-				return this.loader.yaml.loadConfiguration(configurationFileLocation);
-			}
+				if (isYaml) {
+					return this.loader.yaml.loadConfiguration(configurationFileLocation);
+				}
 
-			const isJson = this.supportedExtensions.json.some((extension) => configurationFileLocation.endsWith(extension));
+				const isJson = this.supportedExtensions.json.some((extension) => configurationFileLocation.endsWith(extension));
 
-			if (isJson) {
-				return this.loader.json.loadConfiguration(configurationFileLocation);
-			}
+				if (isJson) {
+					const config = this.loader.json.loadConfiguration(configurationFileLocation);
+					console.log(config);
+					return config;
+				}
 
-			throw new Error(
-				`Cannot load ${configurationFileLocation}. Only ${Object.values(this.supportedExtensions).join(',')} are supported.`
-			);
-		});
+				throw new Error(
+					`Cannot load ${configurationFileLocation}. Only ${Object.values(this.supportedExtensions).join(',')} are supported.`
+				);
+			})
+			.reduce(this.mergeConfig, {});
 	}
 
 	/**
@@ -44,7 +62,7 @@ export class LoaderManager {
 	 *
 	 *
 	 * @remark
-	 * Also check if the file exists. If the file is missing, an error is thrown
+	 * Also checks if the file exists. If the file is missing, an error is thrown
 	 *
 	 * @internal
 	 *
@@ -76,5 +94,24 @@ export class LoaderManager {
 
 			return pathFromRoot;
 		});
+	}
+
+	private mergeConfig(mergedConfig: Record<string, unknown>, config: unknown): Record<string, unknown> {
+		if (!isObject(config)) {
+			return mergedConfig;
+		}
+
+		const profileInConfig = get<string>(config, this.configProperties.onProfile.name);
+
+		const isDefaultProfileActive = profileInConfig === null && this.activeProfiles.includes(DEFAULT_PROFILE_NAME);
+		const isActiveProfile = profileInConfig && this.activeProfiles.includes(profileInConfig);
+
+		const shouldMerge = isDefaultProfileActive || isActiveProfile;
+		if (shouldMerge) {
+			return camelizeAndMerge(mergedConfig, config);
+		}
+
+		// At this point, the profile
+		return mergedConfig;
 	}
 }

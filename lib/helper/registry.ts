@@ -1,6 +1,6 @@
 import type { ConfigProperties } from '../types';
 
-type Store = {
+export type Store = {
 	environmentVariables: Record<string, string | undefined>;
 	configProperties: ConfigProperties;
 };

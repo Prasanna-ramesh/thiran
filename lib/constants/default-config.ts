@@ -1,5 +1,7 @@
 import type { ConfigProperties } from '../types';
 
+export const DEFAULT_PROFILE_NAME = 'default';
+
 export const defaultConfigProperties: ConfigProperties = {
 	/**
 	 * Base location where default and additional configuration files can be found
@@ -50,7 +52,7 @@ export const defaultConfigProperties: ConfigProperties = {
 	 **/
 	activeProfiles: {
 		name: 'profiles.active',
-		defaultValue: 'default',
+		defaultValue: DEFAULT_PROFILE_NAME,
 	},
 	/**
 	 * To define which configuration settings should be applied
@@ -62,7 +64,7 @@ export const defaultConfigProperties: ConfigProperties = {
 	 *
 	 * @remarks
 	 * When a configuration file contains more than one configuration (e.g.) multi-document YAML,
-	 * only one configuration can exists without this property. An error will be thrown otherwise.
+	 * if this property is considered missing, they are considered as default profile(s)
 	 */
 	onProfile: {
 		name: 'config.activate.onProfile',

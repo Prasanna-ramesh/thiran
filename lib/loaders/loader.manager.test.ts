@@ -12,16 +12,22 @@ vi.mock('node:fs', () => ({
 }));
 
 const yamlLoaderMock = {
-	loadConfiguration: vi.fn(),
+	loadConfiguration: () => [
+		{ a: { b: { c: { d: 1, 'yaml-loader': true } } } },
+		{ a: { b: { c: { d: 2 } } } },
+		{ a: { c: 1 } },
+	],
 } satisfies ILoader;
 
 const jsonLoaderMock = {
-	loadConfiguration: vi.fn(),
+	loadConfiguration: () => [
+		{ a: { b: { c: { d: 1, 'json-loader': true } } } },
+		{ a: { b: { c: { d: 2 } } } },
+		{ a: { c: 1 } },
+	],
 } satisfies ILoader;
 
 describe('LoaderManager', () => {
-	const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
-
 	beforeEach(() => {
 		registry.safeSet('configProperties', defaultConfigProperties);
 	});
@@ -38,13 +44,12 @@ describe('LoaderManager', () => {
 		registry.safeSet('environmentVariables', {
 			[defaultConfigProperties.defaultConfigurationFile.name]: defaultConfigurationFileName,
 		});
+
+		const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
 		vi.mocked(existsSync).mockReturnValue(true);
 
-		// when
-		loaderManager.loadConfigurations();
-
-		// then
-		expect(yamlLoaderMock.loadConfiguration).toHaveBeenCalledTimes(1);
+		// when / then
+		expect(loaderManager.loadConfigurations()).toMatchObject({ a: { b: { c: { d: 2, yamlLoader: true } }, c: 1 } });
 	});
 
 	it('should invoke JSON loader for filename ending with .json extension', () => {
@@ -52,13 +57,12 @@ describe('LoaderManager', () => {
 		registry.safeSet('environmentVariables', {
 			[defaultConfigProperties.defaultConfigurationFile.name]: 'application.json',
 		});
+
+		const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
 		vi.mocked(existsSync).mockReturnValue(true);
 
-		// when
-		loaderManager.loadConfigurations();
-
-		// then
-		expect(jsonLoaderMock.loadConfiguration).toHaveBeenCalledTimes(1);
+		// when / then
+		expect(loaderManager.loadConfigurations()).toMatchObject({ a: { b: { c: { d: 2, jsonLoader: true } }, c: 1 } });
 	});
 
 	it('should throw error for unsupported extension', () => {
@@ -66,6 +70,8 @@ describe('LoaderManager', () => {
 		registry.safeSet('environmentVariables', {
 			[defaultConfigProperties.defaultConfigurationFile.name]: 'application.txt',
 		});
+
+		const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
 		vi.mocked(existsSync).mockReturnValue(true);
 
 		// when / then

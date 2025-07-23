@@ -20,14 +20,14 @@ export class ConfigManager {
 			},
 		}
 	) {
-		this.loaderManager = new LoaderManager(this.strategies.loaders);
-	}
-
-	load() {
 		// setup
 		this.camelizeConfigurationProperties();
 		this.camelizeEnvironmentVariables();
 
+		this.loaderManager = new LoaderManager(this.strategies.loaders);
+	}
+
+	load() {
 		const configurations = this.loaderManager.loadConfigurations();
 
 		// TODO: transform and merge configurations

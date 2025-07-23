@@ -45,16 +45,14 @@ export class LoaderManager {
 				const isJson = this.supportedExtensions.json.some((extension) => configurationFileLocation.endsWith(extension));
 
 				if (isJson) {
-					const config = this.loader.json.loadConfiguration(configurationFileLocation);
-					console.log(config);
-					return config;
+					return this.loader.json.loadConfiguration(configurationFileLocation);
 				}
 
 				throw new Error(
 					`Cannot load ${configurationFileLocation}. Only ${Object.values(this.supportedExtensions).join(',')} are supported.`
 				);
 			})
-			.reduce(this.mergeConfig, {});
+			.reduce((accumulator: Record<string, unknown>, current) => this.mergeConfig(accumulator, current), {});
 	}
 
 	/**

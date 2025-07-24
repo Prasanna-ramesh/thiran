@@ -4,7 +4,7 @@ import { resolve } from 'app-root-path';
 import { DEFAULT_PROFILE_NAME } from '../constants/default-config';
 import { registry, type Store } from '../helper/registry';
 import type { Strategies, SupportedFiles } from '../types';
-import { camelizeAndMerge, get, isObject } from '../utils/object';
+import { camelizeAndMerge, get, isNonArrayObject } from '../utils/object';
 
 export class LoaderManager {
 	private readonly supportedExtensions: Record<SupportedFiles, string[]> = {
@@ -95,7 +95,7 @@ export class LoaderManager {
 	}
 
 	private mergeConfig(mergedConfig: Record<string, unknown>, config: unknown): Record<string, unknown> {
-		if (!isObject(config)) {
+		if (!isNonArrayObject(config)) {
 			return mergedConfig;
 		}
 
@@ -109,7 +109,7 @@ export class LoaderManager {
 			return camelizeAndMerge(mergedConfig, config);
 		}
 
-		// At this point, the profile
+		// At this point, the profile is not required by the user
 		return mergedConfig;
 	}
 }

@@ -1,4 +1,4 @@
-import { camelizeAndMerge, get, isObject, set } from './object';
+import { camelizeAndMerge, get, isNonArrayObject, set } from './object';
 
 describe('isObject', () => {
 	it.each([
@@ -9,11 +9,11 @@ describe('isObject', () => {
 		['boolean', true],
 		['undefined', undefined],
 	])('should return false for %s', (_, value) => {
-		expect(isObject(value)).toBe(false);
+		expect(isNonArrayObject(value)).toBe(false);
 	});
 
 	it('should return true for object', () => {
-		expect(isObject({ a: 1 })).toBe(true);
+		expect(isNonArrayObject({ a: 1 })).toBe(true);
 	});
 });
 

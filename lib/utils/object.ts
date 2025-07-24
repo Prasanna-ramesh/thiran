@@ -1,15 +1,27 @@
 import { camelCase } from './formatter';
 
 /**
- * Function that asserts if a given unknown value is an object
+ * Function that asserts if a given unknown value is a non-array object
  *
- * @param value Actual object
+ * @param value Unknown value
+ * @returns True, if the value is an object
  *
  * @internal
  */
-export const isObject = (value: unknown): value is Record<string, unknown> => {
+export const isNonArrayObject = (value: unknown): value is Record<string, unknown> => {
 	return Boolean(value) && !Array.isArray(value) && typeof value === 'object';
 };
+
+/**
+ * Function that asserts if a given unknown value is an object
+ *
+ * @param value Unknown value
+ * @returns if the a given value is either an array or object
+ *
+ * @internal
+ */
+export const isObject = (value: unknown): value is Record<string, unknown> | Record<string, unknown>[] =>
+	Boolean(value) && typeof value === 'object';
 
 /**
  * Get value of a key (or nested key) from an object.
@@ -21,7 +33,7 @@ export const isObject = (value: unknown): value is Record<string, unknown> => {
  * @internal
  */
 export const get = <T>(object: unknown, path: string): T | null => {
-	if (!isObject(object)) {
+	if (!isNonArrayObject(object)) {
 		return null;
 	}
 
@@ -53,7 +65,7 @@ export const camelizeAndMerge = (
 	source: unknown,
 	segments: string[] = []
 ): Record<string, unknown> => {
-	if (!isObject(source)) {
+	if (!isNonArrayObject(source)) {
 		if (segments.length === 0) {
 			throw new Error('[objectUtil.camelizeAndMerge] Invalid source object');
 		} else {
@@ -84,7 +96,7 @@ export const camelizeAndMerge = (
  * @internal
  */
 export const set = (object: Record<string, unknown>, segments: string[], value: unknown): Record<string, unknown> => {
-	if (!isObject(object)) {
+	if (!isNonArrayObject(object)) {
 		throw new Error('[objectUtil.set] Invalid object');
 	}
 

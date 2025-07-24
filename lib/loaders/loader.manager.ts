@@ -27,14 +27,16 @@ export class LoaderManager {
 	}
 
 	/**
-	 * Invokes loader strategy based on the file extension
+	 * Invokes loader strategy based on the file extension.
+	 * Merges the configuration based on the profile and
+	 * merges with the environmental variables at the end
 	 *
 	 * @internal
 	 */
 	loadConfigurations(): Record<string, unknown> {
 		const configurationFilesLocation = this.getConfigurationFilesLocation();
 
-		return configurationFilesLocation
+		const mergedConfigurations = configurationFilesLocation
 			.flatMap((configurationFileLocation) => {
 				const isYaml = this.supportedExtensions.yaml.some((extension) => configurationFileLocation.endsWith(extension));
 
@@ -53,6 +55,8 @@ export class LoaderManager {
 				);
 			})
 			.reduce((accumulator: Record<string, unknown>, current) => this.mergeConfig(accumulator, current), {});
+
+		return this.mergeConfig(mergedConfigurations, this.environmentVariables);
 	}
 
 	/**
@@ -109,7 +113,7 @@ export class LoaderManager {
 			return camelizeAndMerge(mergedConfig, config);
 		}
 
-		// At this point, the profile
+		// At this point, the profile is not required by the user
 		return mergedConfig;
 	}
 }

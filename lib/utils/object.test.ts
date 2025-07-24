@@ -30,11 +30,11 @@ describe('get', () => {
 
 describe('set', () => {
 	it('should set object value', () => {
-		expect(set({}, ['a', 'b', 'c', 'd'], 1)).toMatchObject({ a: { b: { c: { d: 1 } } } });
+		expect(set({}, 'a.b.c.d', 1)).toMatchObject({ a: { b: { c: { d: 1 } } } });
 	});
 
 	it('should overwrite object value', () => {
-		expect(set({ a: { b: { c: { d: 1 } } } }, ['a', 'b', 'c', 'd'], [1, 2])).toMatchObject({
+		expect(set({ a: { b: { c: { d: 1 } } } }, 'a.b.c.d', [1, 2])).toMatchObject({
 			a: { b: { c: { d: [1, 2] } } },
 		});
 	});

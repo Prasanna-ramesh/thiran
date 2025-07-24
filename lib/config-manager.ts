@@ -3,7 +3,7 @@ import { registry } from './helper/registry';
 import { LoaderManager } from './loaders/loader.manager';
 import { JsonLoaderStrategy } from './loaders/strategies/json-loader.strategy';
 import { YamlLoaderStrategy } from './loaders/strategies/yaml-loader.strategy';
-import { ConfigTransformer } from './transformer/config.transformer';
+import { Transformer } from './transformer';
 import type { ConfigProperties, Strategies } from './types';
 import { camelCase } from './utils/formatter';
 import { logger } from './utils/logger';
@@ -11,7 +11,7 @@ import { logger } from './utils/logger';
 export class ConfigManager {
 	private readonly envSeparator = '.';
 	private readonly loaderManager: LoaderManager;
-	private readonly configTransformer: ConfigTransformer;
+	private readonly transformer: Transformer;
 
 	constructor(
 		private readonly configProperties: ConfigProperties = defaultConfigProperties,
@@ -27,14 +27,14 @@ export class ConfigManager {
 		this.camelizeEnvironmentVariables();
 
 		this.loaderManager = new LoaderManager(this.strategies.loaders);
-		this.configTransformer = new ConfigTransformer();
+		this.transformer = new Transformer();
 	}
 
 	load() {
 		const configurations = this.loaderManager.loadConfigurations();
-		const transformedConfigurations = this.configTransformer.expand(configurations);
+		const transformedConfigurations = this.transformer.expand(configurations);
 
-		// TODO: transform and merge configurations
+		// TODO: introduce hooks for the user to add dynamic config (e.g.) IAM based DB connection password
 		logger.log(JSON.stringify(transformedConfigurations));
 
 		// cleanup
@@ -63,6 +63,7 @@ export class ConfigManager {
 			}
 		});
 
+		// TODO: Based, on the usage, introduce expand support for environment variables (e.g.) variables with ${} value in process.env
 		registry.safeSet('environmentVariables', camelizedEnvVar);
 	}
 }

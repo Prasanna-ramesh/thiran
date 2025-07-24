@@ -1,4 +1,4 @@
-import { camelizeAndMerge, get, isNonArrayObject, set } from './object';
+import { camelizeAndMerge, get, isObject, set } from './object';
 
 describe('isObject', () => {
 	it.each([
@@ -9,11 +9,11 @@ describe('isObject', () => {
 		['boolean', true],
 		['undefined', undefined],
 	])('should return false for %s', (_, value) => {
-		expect(isNonArrayObject(value)).toBe(false);
+		expect(isObject(value)).toBe(false);
 	});
 
 	it('should return true for object', () => {
-		expect(isNonArrayObject({ a: 1 })).toBe(true);
+		expect(isObject({ a: 1 })).toBe(true);
 	});
 });
 
@@ -30,11 +30,11 @@ describe('get', () => {
 
 describe('set', () => {
 	it('should set object value', () => {
-		expect(set({}, ['a', 'b', 'c', 'd'], 1)).toMatchObject({ a: { b: { c: { d: 1 } } } });
+		expect(set({}, 'a.b.c.d', 1)).toMatchObject({ a: { b: { c: { d: 1 } } } });
 	});
 
 	it('should overwrite object value', () => {
-		expect(set({ a: { b: { c: { d: 1 } } } }, ['a', 'b', 'c', 'd'], [1, 2])).toMatchObject({
+		expect(set({ a: { b: { c: { d: 1 } } } }, 'a.b.c.d', [1, 2])).toMatchObject({
 			a: { b: { c: { d: [1, 2] } } },
 		});
 	});

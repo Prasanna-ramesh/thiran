@@ -4,7 +4,7 @@ import { resolve } from 'app-root-path';
 import { DEFAULT_PROFILE_NAME } from '../constants/default-config';
 import { registry, type Store } from '../helper/registry';
 import type { Strategies, SupportedFiles } from '../types';
-import { camelizeAndMerge, get, isNonArrayObject } from '../utils/object';
+import { camelizeAndMerge, get, isObject } from '../utils/object';
 
 export class LoaderManager {
 	private readonly supportedExtensions: Record<SupportedFiles, string[]> = {
@@ -27,14 +27,16 @@ export class LoaderManager {
 	}
 
 	/**
-	 * Invokes loader strategy based on the file extension
+	 * Invokes loader strategy based on the file extension.
+	 * Merges the configuration based on the profile and
+	 * merges with the environmental variables at the end
 	 *
 	 * @internal
 	 */
 	loadConfigurations(): Record<string, unknown> {
 		const configurationFilesLocation = this.getConfigurationFilesLocation();
 
-		return configurationFilesLocation
+		const mergedConfigurations = configurationFilesLocation
 			.flatMap((configurationFileLocation) => {
 				const isYaml = this.supportedExtensions.yaml.some((extension) => configurationFileLocation.endsWith(extension));
 
@@ -53,6 +55,8 @@ export class LoaderManager {
 				);
 			})
 			.reduce((accumulator: Record<string, unknown>, current) => this.mergeConfig(accumulator, current), {});
+
+		return this.mergeConfig(mergedConfigurations, this.environmentVariables);
 	}
 
 	/**
@@ -95,7 +99,7 @@ export class LoaderManager {
 	}
 
 	private mergeConfig(mergedConfig: Record<string, unknown>, config: unknown): Record<string, unknown> {
-		if (!isNonArrayObject(config)) {
+		if (!isObject(config)) {
 			return mergedConfig;
 		}
 

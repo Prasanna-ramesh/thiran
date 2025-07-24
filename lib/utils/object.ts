@@ -8,7 +8,7 @@ import { camelCase } from './formatter';
  *
  * @internal
  */
-export const isNonArrayObject = (value: unknown): value is Record<string, unknown> => {
+export const isObject = (value: unknown): value is Record<string, unknown> => {
 	return Boolean(value) && !Array.isArray(value) && typeof value === 'object';
 };
 
@@ -20,7 +20,7 @@ export const isNonArrayObject = (value: unknown): value is Record<string, unknow
  *
  * @internal
  */
-export const isObject = (value: unknown): value is Record<string, unknown> | Record<string, unknown>[] =>
+export const isArrayOrObject = (value: unknown): value is Record<string, unknown> | Record<string, unknown>[] =>
 	Boolean(value) && typeof value === 'object';
 
 /**
@@ -33,7 +33,7 @@ export const isObject = (value: unknown): value is Record<string, unknown> | Rec
  * @internal
  */
 export const get = <T>(object: unknown, path: string): T | null => {
-	if (!isNonArrayObject(object)) {
+	if (!isObject(object)) {
 		return null;
 	}
 
@@ -56,30 +56,30 @@ export const get = <T>(object: unknown, path: string): T | null => {
  *
  * @param target Target Object
  * @param source Source Object
- * @param segments
+ * @param path Nested key separated by dot
  *
  * @internal
  */
 export const camelizeAndMerge = (
 	target: Record<string, unknown>,
 	source: unknown,
-	segments: string[] = []
+	path: string = ''
 ): Record<string, unknown> => {
-	if (!isNonArrayObject(source)) {
-		if (segments.length === 0) {
-			throw new Error('[objectUtil.camelizeAndMerge] Invalid source object');
+	if (!isObject(source)) {
+		if (path === '') {
+			throw new Error('[objectUtil.camelizeAndMerge] Invalid source. Configurations cannot be merged.');
 		} else {
-			return source as Record<string, unknown>;
+			return set(target, path, source);
 		}
 	}
 
 	Object.entries(source).forEach(([key, value]) => {
-		const newSegments: string[] = [...segments, camelCase(key)];
+		const newPath = path ? `${path}.${camelCase(key)}` : camelCase(key);
 
 		if (typeof value === 'object') {
-			camelizeAndMerge(target, value, newSegments);
+			camelizeAndMerge(target, value, newPath);
 		} else {
-			set(target, newSegments, value);
+			set(target, newPath, value);
 		}
 	});
 
@@ -87,21 +87,22 @@ export const camelizeAndMerge = (
 };
 
 /**
- * Set object value for a given segments
+ * Set object value for a given path
  *
  * @param object Source object
- * @param segments Nested segments in a given object
+ * @param path Nested key separated by dot
  * @param value Value to overwrite at the last segment
  *
  * @internal
  */
-export const set = (object: Record<string, unknown>, segments: string[], value: unknown): Record<string, unknown> => {
-	if (!isNonArrayObject(object)) {
+export const set = (object: Record<string, unknown>, path: string, value: unknown): Record<string, unknown> => {
+	if (!isObject(object)) {
 		throw new Error('[objectUtil.set] Invalid object');
 	}
 
 	let currentObject = object;
 
+	const segments = path.split('.').map((_path) => _path.trim());
 	for (const segment of segments) {
 		if (segments.at(-1) === segment) {
 			currentObject[segment] = value;

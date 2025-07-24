@@ -13,17 +13,33 @@ vi.mock('node:fs', () => ({
 
 const yamlLoaderMock = {
 	loadConfiguration: () => [
-		{ a: { b: { c: { d: 1, 'yaml-loader': true } } } },
-		{ a: { b: { c: { d: 2 } } } },
-		{ a: { c: 1 } },
+		{
+			config: {
+				activate: {
+					'on-profile': '${PROFILE}',
+				},
+			},
+			port: 3000,
+			'log-levels': ['log', 'error', 'warn', 'debug'],
+		},
+		{ 'yaml-loader': true },
+		{ config: { activate: { 'on-profile': 'default, local' } } },
 	],
 } satisfies ILoader;
 
 const jsonLoaderMock = {
 	loadConfiguration: () => [
-		{ a: { b: { c: { d: 1, 'json-loader': true } } } },
-		{ a: { b: { c: { d: 2 } } } },
-		{ a: { c: 1 } },
+		{
+			config: {
+				activate: {
+					'on-profile': '${PROFILE}',
+				},
+			},
+			port: 3000,
+			'log-levels': ['log', 'error', 'warn', 'debug'],
+		},
+		{ 'json-loader': true },
+		{ config: { activate: { 'on-profile': 'default, local' } } },
 	],
 } satisfies ILoader;
 
@@ -49,7 +65,17 @@ describe('LoaderManager', () => {
 		vi.mocked(existsSync).mockReturnValue(true);
 
 		// when / then
-		expect(loaderManager.loadConfigurations()).toMatchObject({ a: { b: { c: { d: 2, yamlLoader: true } }, c: 1 } });
+		expect(loaderManager.loadConfigurations()).toStrictEqual({
+			config: {
+				activate: {
+					onProfile: 'default, local',
+				},
+				location: defaultConfigurationFileName,
+			},
+			port: 3000,
+			logLevels: ['log', 'error', 'warn', 'debug'],
+			yamlLoader: true,
+		});
 	});
 
 	it('should invoke JSON loader for filename ending with .json extension', () => {
@@ -62,7 +88,17 @@ describe('LoaderManager', () => {
 		vi.mocked(existsSync).mockReturnValue(true);
 
 		// when / then
-		expect(loaderManager.loadConfigurations()).toMatchObject({ a: { b: { c: { d: 2, jsonLoader: true } }, c: 1 } });
+		expect(loaderManager.loadConfigurations()).toStrictEqual({
+			config: {
+				activate: {
+					onProfile: 'default, local',
+				},
+				location: 'application.json',
+			},
+			port: 3000,
+			logLevels: ['log', 'error', 'warn', 'debug'],
+			jsonLoader: true,
+		});
 	});
 
 	it('should throw error for unsupported extension', () => {

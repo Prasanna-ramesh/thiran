@@ -10,7 +10,7 @@ vi.mock('node:fs', async (requireActual) => ({
 const yamlContent = /* yaml */ `
 config:
   activate:
-    on-profile: default, local
+    on-profile: \${PROFILE}
 port: 3000
 log-levels:
   - log
@@ -40,7 +40,7 @@ describe('YamlLoaderStrategy', () => {
 			{
 				config: {
 					activate: {
-						'on-profile': 'default, local',
+						'on-profile': '${PROFILE}',
 					},
 				},
 				port: 3000,

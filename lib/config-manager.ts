@@ -3,13 +3,15 @@ import { registry } from './helper/registry';
 import { LoaderManager } from './loaders/loader.manager';
 import { JsonLoaderStrategy } from './loaders/strategies/json-loader.strategy';
 import { YamlLoaderStrategy } from './loaders/strategies/yaml-loader.strategy';
+import { ConfigTransformer } from './transformer/config.transformer';
 import type { ConfigProperties, Strategies } from './types';
 import { camelCase } from './utils/formatter';
 import { logger } from './utils/logger';
 
 export class ConfigManager {
 	private readonly envSeparator = '.';
-	private loaderManager: LoaderManager;
+	private readonly loaderManager: LoaderManager;
+	private readonly configTransformer: ConfigTransformer;
 
 	constructor(
 		private readonly configProperties: ConfigProperties = defaultConfigProperties,
@@ -25,13 +27,15 @@ export class ConfigManager {
 		this.camelizeEnvironmentVariables();
 
 		this.loaderManager = new LoaderManager(this.strategies.loaders);
+		this.configTransformer = new ConfigTransformer();
 	}
 
 	load() {
 		const configurations = this.loaderManager.loadConfigurations();
+		const transformedConfigurations = this.configTransformer.expand(configurations);
 
 		// TODO: transform and merge configurations
-		logger.log(JSON.stringify(configurations));
+		logger.log(JSON.stringify(transformedConfigurations));
 
 		// cleanup
 		registry.clear();
@@ -51,9 +55,11 @@ export class ConfigManager {
 	private camelizeEnvironmentVariables() {
 		const camelizedEnvVar: Record<string, string | undefined> = {};
 
-		Object.keys(process.env).forEach((key) => {
+		Object.entries(process.env).forEach(([key, value]) => {
 			if (key.includes(this.envSeparator)) {
-				camelizedEnvVar[camelCase(key)] = process.env[key];
+				camelizedEnvVar[camelCase(key)] = value;
+			} else {
+				camelizedEnvVar[key] = value;
 			}
 		});
 

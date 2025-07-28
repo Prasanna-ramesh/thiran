@@ -1,3 +1,5 @@
+import type { StandardSchemaV1 } from '@standard-schema/spec';
+
 import { defaultConfigProperties } from './constants/default-config';
 import { registry } from './helper/registry';
 import { LoaderManager } from './loaders/loader.manager';
@@ -8,18 +10,33 @@ import type { ConfigProperties, Strategies } from './types';
 import { camelCase } from './utils/formatter';
 import { logger } from './utils/logger';
 
-export class ConfigManager {
+type ExtractType<T> = T extends { '~standard': { types: infer Type } } ? Type : unknown;
+type ExtractOutputType<T> = ExtractType<T> extends { output: infer Output } ? Output : unknown;
+
+export class ConfigManager<ValidationSchema extends StandardSchemaV1> {
 	private readonly envSeparator = '.';
+
+	private readonly configProperties: ConfigProperties = defaultConfigProperties;
+	private readonly strategies: Strategies = {
+		loaders: {
+			yaml: new YamlLoaderStrategy(),
+			json: new JsonLoaderStrategy(),
+		},
+	};
+
 	private readonly loaderManager: LoaderManager;
 	private readonly transformer: Transformer;
 
+	private configurations: ExtractOutputType<ValidationSchema> | null = null;
+
 	constructor(
-		private readonly configProperties: ConfigProperties = defaultConfigProperties,
-		private readonly strategies: Strategies = {
-			loaders: {
-				yaml: new YamlLoaderStrategy(),
-				json: new JsonLoaderStrategy(),
-			},
+		private readonly settings: {
+			schema: ValidationSchema;
+			hooks?: {
+				beforeValidate: (
+					config: Partial<ExtractOutputType<ValidationSchema>>
+				) => Partial<ExtractOutputType<ValidationSchema>>;
+			};
 		}
 	) {
 		// setup
@@ -30,15 +47,30 @@ export class ConfigManager {
 		this.transformer = new Transformer();
 	}
 
-	load() {
-		const configurations = this.loaderManager.loadConfigurations();
-		const transformedConfigurations = this.transformer.expand(configurations);
+	async load() {
+		const mergedConfigurations = this.loaderManager.loadConfigurations();
+		const transformedConfigurations = this.transformer.expand(mergedConfigurations);
 
-		// TODO: introduce hooks for the user to add dynamic config (e.g.) IAM based DB connection password
-		logger.log(JSON.stringify(transformedConfigurations));
+		this.settings.hooks?.beforeValidate(transformedConfigurations);
 
-		// cleanup
-		registry.clear();
+		const { validate, version, vendor } = this.settings.schema['~standard'];
+		logger.log(`Validation with Standard Schema version ${version} using ${vendor} vendor`);
+
+		const result = await validate(transformedConfigurations);
+		if (!result.issues) {
+			this.configurations = result.value as ExtractOutputType<ValidationSchema>;
+
+			// cleanup
+			registry.clear();
+
+			return this.configurations;
+		}
+
+		result.issues.forEach(({ message }) => {
+			logger.error(message);
+		});
+
+		throw new Error('Validation failed. Terminating process', {});
 	}
 
 	private camelizeConfigurationProperties() {
@@ -63,7 +95,7 @@ export class ConfigManager {
 			}
 		});
 
-		// TODO: Based, on the usage, introduce expand support for environment variables (e.g.) variables with ${} value in process.env
+		// TODO: Based on the usage, support expanding environment variables (e.g.) variables with ${} value in process.env
 		registry.safeSet('environmentVariables', camelizedEnvVar);
 	}
 }

@@ -9,7 +9,8 @@
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"lint:ci": "biome ci",
-		"format": "biome format . --write"
+		"format": "biome format . --write",
+		"build": "tsc && tsc-alias"
 	},
 	"keywords": [
 		"Config Manager"

@@ -1,12 +1,11 @@
 {
-	"include": ["lib"],
-	"exclude": ["node_modules"],
+	"include": ["lib", "test"],
 	"compilerOptions": {
 		"target": "ES2024",
 		"forceConsistentCasingInFileNames": true,
 		"strict": true,
 		"noImplicitAny": true,
-		"rootDir": "./lib",
+		"rootDir": ".",
 		"module": "NodeNext",
 		"moduleResolution": "nodenext",
 		"paths": {

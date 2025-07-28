@@ -1,5 +1,4 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-
 import { defaultConfigProperties } from './constants/default-config';
 import { registry } from './helper/registry';
 import { LoaderManager } from './loaders/loader.manager';
@@ -31,11 +30,14 @@ export class ConfigManager<ValidationSchema extends StandardSchemaV1> {
 
 	constructor(
 		private readonly settings: {
-			schema: ValidationSchema;
+			validationSchema: ValidationSchema;
 			hooks?: {
+				/**
+				 * To hydrate config before performing validation
+				 */
 				beforeValidate: (
 					config: Partial<ExtractOutputType<ValidationSchema>>
-				) => Partial<ExtractOutputType<ValidationSchema>>;
+				) => Partial<ExtractOutputType<ValidationSchema>> | Promise<Partial<ExtractOutputType<ValidationSchema>>>;
 			};
 		}
 	) {
@@ -51,12 +53,13 @@ export class ConfigManager<ValidationSchema extends StandardSchemaV1> {
 		const mergedConfigurations = this.loaderManager.loadConfigurations();
 		const transformedConfigurations = this.transformer.expand(mergedConfigurations);
 
-		this.settings.hooks?.beforeValidate(transformedConfigurations);
+		const hydratedConfigurations =
+			this.settings.hooks?.beforeValidate(transformedConfigurations) ?? transformedConfigurations;
 
-		const { validate, version, vendor } = this.settings.schema['~standard'];
+		const { validate, version, vendor } = this.settings.validationSchema['~standard'];
 		logger.log(`Validation with Standard Schema version ${version} using ${vendor} vendor`);
 
-		const result = await validate(transformedConfigurations);
+		const result = await validate(hydratedConfigurations);
 		if (!result.issues) {
 			this.configurations = result.value as ExtractOutputType<ValidationSchema>;
 

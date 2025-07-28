@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'app-root-path';
-import { JsonLoaderStrategy } from './json-loader.strategy';
+import { JsonLoaderStrategy } from '../../../lib/loaders/strategies/json-loader.strategy';
 
 vi.mock('node:fs', async (requireActual) => ({
 	...(await requireActual()),

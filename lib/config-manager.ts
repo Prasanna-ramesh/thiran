@@ -1,3 +1,4 @@
+import type { StandardSchemaV1 } from '@standard-schema/spec';
 import { defaultConfigProperties } from './constants/default-config';
 import { registry } from './helper/registry';
 import { LoaderManager } from './loaders/loader.manager';
@@ -8,18 +9,33 @@ import type { ConfigProperties, Strategies } from './types';
 import { camelCase } from './utils/formatter';
 import { logger } from './utils/logger';
 
-export class ConfigManager {
+export class ConfigManager<Config = unknown> {
 	private readonly envSeparator = '.';
+
+	private readonly configProperties: ConfigProperties = defaultConfigProperties;
+	private readonly strategies: Strategies = {
+		loaders: {
+			yaml: new YamlLoaderStrategy(),
+			json: new JsonLoaderStrategy(),
+		},
+	};
+
 	private readonly loaderManager: LoaderManager;
 	private readonly transformer: Transformer;
 
+	private configurations: Config | null = null;
+
 	constructor(
-		private readonly configProperties: ConfigProperties = defaultConfigProperties,
-		private readonly strategies: Strategies = {
-			loaders: {
-				yaml: new YamlLoaderStrategy(),
-				json: new JsonLoaderStrategy(),
-			},
+		private readonly settings: {
+			validationSchema: StandardSchemaV1<Config>;
+			hooks?: {
+				/**
+				 * To hydrate config before performing validation
+				 */
+				beforeValidate: <HydratedConfig extends Partial<Config>>(
+					config: HydratedConfig
+				) => HydratedConfig | Promise<HydratedConfig>;
+			};
 		}
 	) {
 		// setup
@@ -30,15 +46,31 @@ export class ConfigManager {
 		this.transformer = new Transformer();
 	}
 
-	load() {
-		const configurations = this.loaderManager.loadConfigurations();
-		const transformedConfigurations = this.transformer.expand(configurations);
+	async load() {
+		const mergedConfigurations = this.loaderManager.loadConfigurations();
+		const transformedConfigurations = this.transformer.expand(mergedConfigurations);
 
-		// TODO: introduce hooks for the user to add dynamic config (e.g.) IAM based DB connection password
-		logger.log(JSON.stringify(transformedConfigurations));
+		const hydratedConfigurations =
+			this.settings.hooks?.beforeValidate(transformedConfigurations) ?? transformedConfigurations;
 
-		// cleanup
-		registry.clear();
+		const { validate, version, vendor } = this.settings.validationSchema['~standard'];
+		logger.log(`Validation with Standard Schema version ${version} using ${vendor} vendor`);
+
+		const result = await validate(hydratedConfigurations);
+		if (!result.issues) {
+			this.configurations = result.value;
+
+			// cleanup
+			registry.clear();
+
+			return this.configurations;
+		}
+
+		result.issues.forEach(({ message }) => {
+			logger.error(message);
+		});
+
+		throw new Error('Validation failed. Terminating process');
 	}
 
 	private camelizeConfigurationProperties() {
@@ -63,7 +95,7 @@ export class ConfigManager {
 			}
 		});
 
-		// TODO: Based, on the usage, introduce expand support for environment variables (e.g.) variables with ${} value in process.env
+		// TODO: Based on the usage, support expanding environment variables (e.g.) variables with ${} value in process.env
 		registry.safeSet('environmentVariables', camelizedEnvVar);
 	}
 }

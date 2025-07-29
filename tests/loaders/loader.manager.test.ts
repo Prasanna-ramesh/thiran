@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
-import { defaultConfigProperties } from '../constants/default-config';
-import { registry } from '../helper/registry';
-import type { ILoader } from '../types';
-import { LoaderManager } from './loader.manager';
+import { defaultConfigProperties } from '@/lib/constants/default-config';
+import { registry } from '@/lib/helper/registry';
+import { LoaderManager } from '@/lib/loaders/loader.manager';
+import type { ILoader } from '@/lib/types';
 
 vi.mock('app-root-path', () => ({
 	resolve: (path: string) => path,
@@ -16,7 +16,7 @@ const yamlLoaderMock = {
 		{
 			config: {
 				activate: {
-					'on-profile': '${PROFILE}',
+					'on-profile': 'default',
 				},
 			},
 			port: 3000,
@@ -32,7 +32,7 @@ const jsonLoaderMock = {
 		{
 			config: {
 				activate: {
-					'on-profile': '${PROFILE}',
+					'on-profile': 'default',
 				},
 			},
 			port: 3000,

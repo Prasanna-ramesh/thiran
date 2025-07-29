@@ -9,7 +9,7 @@ export class Transformer {
 	/**
 	 * Replaces ${} with corresponding value from environment variable or nested key.
 	 *
-	 * @param configurations Loaded configuration
+	 * @param mergedConfigurations Loaded and merged configuration object
 	 * @returns Expanded and merged configurations
 	 *
 	 * @throws Error when the key to be replaced is not available in environment variables or in the existing configuration
@@ -17,8 +17,7 @@ export class Transformer {
 	expand(mergedConfigurations: Record<string, unknown>) {
 		this.mergedConfigurationsClone = structuredClone(mergedConfigurations);
 
-		const yy = this.recursiveExpand(mergedConfigurations);
-		return yy;
+		return this.recursiveExpand(mergedConfigurations);
 	}
 
 	private recursiveExpand(configurations: Record<string, unknown> | Record<string, unknown>[]): NonNullable<object> {
@@ -59,7 +58,7 @@ export class Transformer {
 				return fromConfiguration;
 			}
 
-			throw new Error(`[ConfigTransform.replaceKey] Unable to find the key ${keyToReplace}`);
+			throw new Error(`Unable to find the key ${keyToReplace}`);
 		});
 	}
 }

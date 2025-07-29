@@ -1,0 +1,14 @@
+config:
+  activate:
+    on-profile: default, local, development
+tenants:
+  tenant-a:
+    issuer: ${auth.serverUrl}/realms/tenant-a
+---
+
+config:
+  activate:
+    on-profile: production
+tenants:
+  tenant-a:
+    issuer: ${auth.serverUrl}/realms/tenant-a

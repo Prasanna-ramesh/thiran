@@ -1,4 +1,4 @@
-import { camelizeAndMerge, get, isObject, set } from './object';
+import { camelizeAndMerge, get, isObject, set } from '@/lib/utils/object';
 
 describe('isObject', () => {
 	it.each([

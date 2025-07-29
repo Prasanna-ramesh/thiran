@@ -16,7 +16,7 @@ const yamlLoaderMock = {
 		{
 			config: {
 				activate: {
-					'on-profile': '${PROFILE}',
+					'on-profile': 'default',
 				},
 			},
 			port: 3000,
@@ -32,7 +32,7 @@ const jsonLoaderMock = {
 		{
 			config: {
 				activate: {
-					'on-profile': '${PROFILE}',
+					'on-profile': 'default',
 				},
 			},
 			port: 3000,

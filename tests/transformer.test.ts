@@ -1,6 +1,6 @@
-import { defaultConfigProperties } from '../lib/constants/default-config';
-import { registry } from '../lib/helper/registry';
-import { Transformer } from '../lib/transformer';
+import { defaultConfigProperties } from '@/lib/constants/default-config';
+import { registry } from '@/lib/helper/registry';
+import { Transformer } from '@/lib/transformer';
 
 describe('Transformer', () => {
 	const transformer = new Transformer();

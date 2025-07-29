@@ -1,0 +1,56 @@
+config:
+  activate:
+    on-profile: default, local
+port: 3000
+log-levels:
+  - log
+  - error
+  - warn
+  - debug
+  - verbose
+database:
+  type: mysql
+  host: localhost
+  port: 3306
+  database: schema-name
+  username: root
+auth:
+  server-url: https://auth-server.local
+
+---
+
+port: 3000
+log-levels:
+  - log
+  - error
+  - warn
+config:
+  activate:
+    on-profile: development
+database:
+  type: mysql
+  host: database-host.development.endpoint
+  port: 3306
+  database: database-name
+  username: root
+auth:
+  server-url: https://auth-server.development
+
+---
+
+port: 3000
+log-levels:
+  - log
+  - error
+  - warn
+config:
+  activate:
+    on-profile: production
+database:
+  type: mysql
+  host: database-host.production.endpoint
+  port: 3306
+  database: database-name
+  username: root
+auth:
+  server-url: https://auth-server.production

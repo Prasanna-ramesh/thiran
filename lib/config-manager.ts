@@ -9,10 +9,7 @@ import type { ConfigProperties, Strategies } from './types';
 import { camelCase } from './utils/formatter';
 import { logger } from './utils/logger';
 
-type ExtractType<T> = T extends { '~standard': { types: infer Type } } ? Type : unknown;
-type ExtractOutputType<T> = ExtractType<T> extends { output: infer Output } ? Output : unknown;
-
-export class ConfigManager<ValidationSchema extends StandardSchemaV1> {
+export class ConfigManager<Config = unknown> {
 	private readonly envSeparator = '.';
 
 	private readonly configProperties: ConfigProperties = defaultConfigProperties;
@@ -26,18 +23,18 @@ export class ConfigManager<ValidationSchema extends StandardSchemaV1> {
 	private readonly loaderManager: LoaderManager;
 	private readonly transformer: Transformer;
 
-	private configurations: ExtractOutputType<ValidationSchema> | null = null;
+	private configurations: Config | null = null;
 
 	constructor(
 		private readonly settings: {
-			validationSchema: ValidationSchema;
+			validationSchema: StandardSchemaV1<Config>;
 			hooks?: {
 				/**
 				 * To hydrate config before performing validation
 				 */
-				beforeValidate: (
-					config: Partial<ExtractOutputType<ValidationSchema>>
-				) => Partial<ExtractOutputType<ValidationSchema>> | Promise<Partial<ExtractOutputType<ValidationSchema>>>;
+				beforeValidate: <HydratedConfig extends Partial<Config>>(
+					config: HydratedConfig
+				) => HydratedConfig | Promise<HydratedConfig>;
 			};
 		}
 	) {
@@ -61,7 +58,7 @@ export class ConfigManager<ValidationSchema extends StandardSchemaV1> {
 
 		const result = await validate(hydratedConfigurations);
 		if (!result.issues) {
-			this.configurations = result.value as ExtractOutputType<ValidationSchema>;
+			this.configurations = result.value;
 
 			// cleanup
 			registry.clear();
@@ -73,7 +70,7 @@ export class ConfigManager<ValidationSchema extends StandardSchemaV1> {
 			logger.error(message);
 		});
 
-		throw new Error('Validation failed. Terminating process', {});
+		throw new Error('Validation failed. Terminating process');
 	}
 
 	private camelizeConfigurationProperties() {

@@ -58,7 +58,7 @@ export class Transformer {
 				return fromConfiguration;
 			}
 
-			throw new Error(`[ConfigTransform.replaceKey] Unable to find the key ${keyToReplace}`);
+			throw new Error(`Unable to find the key ${keyToReplace}`);
 		});
 	}
 }

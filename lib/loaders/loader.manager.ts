@@ -23,7 +23,7 @@ export class LoaderManager {
 		const { activeProfiles } = this.configProperties;
 		this.activeProfiles = (this.environmentVariables[activeProfiles.name] ?? activeProfiles.defaultValue)
 			?.split(',')
-			.map((value) => value.trim()) ?? [DEFAULT_PROFILE_NAME];
+			?.map((value) => value.trim()) ?? [DEFAULT_PROFILE_NAME];
 	}
 
 	/**
@@ -39,13 +39,11 @@ export class LoaderManager {
 		const mergedConfigurations = configurationFilesLocation
 			.flatMap((configurationFileLocation) => {
 				const isYaml = this.supportedExtensions.yaml.some((extension) => configurationFileLocation.endsWith(extension));
-
 				if (isYaml) {
 					return this.loader.yaml.loadConfiguration(configurationFileLocation);
 				}
 
 				const isJson = this.supportedExtensions.json.some((extension) => configurationFileLocation.endsWith(extension));
-
 				if (isJson) {
 					return this.loader.json.loadConfiguration(configurationFileLocation);
 				}
@@ -78,12 +76,16 @@ export class LoaderManager {
 
 		const baseLocationValue = environmentVariables[baseLocation.name] ?? baseLocation.defaultValue;
 		const defaultConfigurationFileValue =
-			environmentVariables[defaultConfigurationFile.name]?.trim() ?? defaultConfigurationFile.name;
+			environmentVariables[defaultConfigurationFile.name]?.trim() ?? defaultConfigurationFile.defaultValue;
 		const additionalConfigurationFilesValue =
 			environmentVariables[additionalConfigurationFiles.name]?.split(',')?.map((filename) => filename.trim()) ?? [];
 
 		if (!baseLocationValue) {
 			return [];
+		}
+
+		if (!defaultConfigurationFileValue) {
+			throw new Error('Default configuration file location is missing');
 		}
 
 		return [defaultConfigurationFileValue, ...additionalConfigurationFilesValue].map((configFile) => {
@@ -103,10 +105,14 @@ export class LoaderManager {
 			return mergedConfig;
 		}
 
-		const profileInConfig = get<string>(config, this.configProperties.onProfile.name);
+		// TODO: camelize config
+		const profilesInConfig =
+			get<string>(config, this.configProperties.onProfile.name, true)
+				?.split(',')
+				.map((profile) => profile.trim()) ?? [];
 
-		const isDefaultProfileActive = profileInConfig === null && this.activeProfiles.includes(DEFAULT_PROFILE_NAME);
-		const isActiveProfile = profileInConfig && this.activeProfiles.includes(profileInConfig);
+		const isDefaultProfileActive = profilesInConfig.length === 0 && this.activeProfiles.includes(DEFAULT_PROFILE_NAME);
+		const isActiveProfile = this.activeProfiles.some((activeProfile) => profilesInConfig.includes(activeProfile));
 
 		const shouldMerge = isDefaultProfileActive || isActiveProfile;
 		if (shouldMerge) {

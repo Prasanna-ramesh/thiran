@@ -28,21 +28,27 @@ export const isArrayOrObject = (value: unknown): value is Record<string, unknown
  * Equivalent to .get() from lodash
  *
  * @param object Actual object
- * @param path key of the property. Incase of nested property, it's dot separated
+ * @param path key of the property. In case of nested property, it's dot separated
+ * @param camelize If set to true, the keys will be camelized before obtaining the value from object
  *
  * @internal
  */
-export const get = <T>(object: unknown, path: string): T | null => {
+export const get = <T>(object: unknown, path: string, camelize: boolean = false): T | null => {
 	if (!isObject(object)) {
 		return null;
 	}
 
 	const keys = path.split('.');
-	let currentObject: unknown = object;
+	let currentObject: Record<string, unknown> = object;
 
 	for (const key of keys) {
-		if (currentObject && typeof currentObject === 'object' && key in currentObject) {
-			currentObject = (currentObject as Record<string, unknown>)[key];
+		const normalizedObject =
+			camelize && isObject(currentObject)
+				? Object.fromEntries(Object.entries(currentObject).map(([key, value]) => [camelCase(key), value]))
+				: currentObject;
+
+		if (isObject(normalizedObject) && key in normalizedObject) {
+			currentObject = normalizedObject[key] as Record<string, unknown>;
 		} else {
 			return null;
 		}
@@ -67,7 +73,7 @@ export const camelizeAndMerge = (
 ): Record<string, unknown> => {
 	if (!isObject(source)) {
 		if (path === '') {
-			throw new Error('[objectUtil.camelizeAndMerge] Invalid source. Configurations cannot be merged.');
+			throw new Error('Invalid source. Configurations cannot be merged.');
 		} else {
 			return set(target, path, source);
 		}
@@ -97,14 +103,15 @@ export const camelizeAndMerge = (
  */
 export const set = (object: Record<string, unknown>, path: string, value: unknown): Record<string, unknown> => {
 	if (!isObject(object)) {
-		throw new Error('[objectUtil.set] Invalid object');
+		throw new Error('Invalid object');
 	}
 
 	let currentObject = object;
 
 	const segments = path.split('.').map((_path) => _path.trim());
-	for (const segment of segments) {
-		if (segments.at(-1) === segment) {
+	for (let count = 0; count < segments.length; count += 1) {
+		const segment = segments[count];
+		if (count === segments.length - 1) {
 			currentObject[segment] = value;
 		} else {
 			if (!(segment in currentObject)) {

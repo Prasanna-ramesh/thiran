@@ -3,3 +3,5 @@ dist
 sample-config/**
 .env
 coverage
+.idea
+.vscode

@@ -1,5 +1,5 @@
-import { defaultConfigProperties } from '../../lib/constants/default-config';
-import { registry } from '../../lib/helper/registry';
+import { defaultConfigProperties } from '@/lib/constants/default-config';
+import { registry } from '@/lib/helper/registry';
 
 describe('registry', () => {
 	afterEach(() => {

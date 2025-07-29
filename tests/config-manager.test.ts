@@ -1,7 +1,7 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import { ConfigManager } from '../lib/config-manager';
-import { registry } from '../lib/helper/registry';
-import { LoaderManager } from '../lib/loaders/loader.manager';
+import { ConfigManager } from '@/lib/config-manager';
+import { registry } from '@/lib/helper/registry';
+import { LoaderManager } from '@/lib/loaders/loader.manager';
 
 const validationSchemaMock: StandardSchemaV1 = {
 	'~standard': {

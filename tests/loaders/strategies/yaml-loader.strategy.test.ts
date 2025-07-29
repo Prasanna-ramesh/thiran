@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'app-root-path';
-import { YamlLoaderStrategy } from '../../../lib/loaders/strategies/yaml-loader.strategy';
+import { YamlLoaderStrategy } from '@/lib/loaders/strategies/yaml-loader.strategy';
 
 vi.mock('node:fs', async (requireActual) => ({
 	...(await requireActual()),

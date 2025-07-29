@@ -1,8 +1,8 @@
 import { existsSync } from 'node:fs';
-import { defaultConfigProperties } from '../../lib/constants/default-config';
-import { registry } from '../../lib/helper/registry';
-import { LoaderManager } from '../../lib/loaders/loader.manager';
-import type { ILoader } from '../../lib/types';
+import { defaultConfigProperties } from '@/lib/constants/default-config';
+import { registry } from '@/lib/helper/registry';
+import { LoaderManager } from '@/lib/loaders/loader.manager';
+import type { ILoader } from '@/lib/types';
 
 vi.mock('app-root-path', () => ({
 	resolve: (path: string) => path,

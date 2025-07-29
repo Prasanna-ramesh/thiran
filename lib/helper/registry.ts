@@ -13,7 +13,7 @@ export type Store = {
  * @internal
  */
 class Registry {
-	private store = new Map<keyof Store, Store[keyof Store]>();
+	private readonly store = new Map<keyof Store, Store[keyof Store]>();
 
 	/**
 	 * Allows setting the key only once. Overriding the key will result in error

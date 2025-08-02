@@ -30,7 +30,7 @@
 		"test:coverage": "vitest run --coverage",
 		"lint:ci": "biome ci",
 		"format": "biome format . --write",
-		"prepublishOnly": "tsup dist/index.d.mts"
+		"prepublishOnly": "tsup"
 	},
 	"keywords": [
 		"Config Manager"

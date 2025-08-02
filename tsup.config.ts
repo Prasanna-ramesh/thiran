@@ -1,4 +1,3 @@
-import { copyFileSync } from 'node:fs';
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
@@ -7,7 +6,4 @@ export default defineConfig({
 	format: ['cjs', 'esm'],
 	clean: true,
 	outDir: 'dist',
-	onSuccess: async () => {
-		copyFileSync('./package.json', './dist/package.json');
-	},
 });

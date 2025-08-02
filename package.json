@@ -5,12 +5,32 @@
 	"engines": {
 		"node": ">=22"
 	},
+	"exports": {
+		".": {
+			"import": {
+				"default": "./dist/index.mjs",
+				"types": "dist/index.d.ts"
+			},
+			"require": {
+				"types": "dist/index.d.ts",
+				"default": "./dist/index.js"
+			}
+		}
+	},
+	"files": [
+		"dist",
+		"package.json",
+		"README.md",
+		"docs",
+		"thiran.png",
+		"LICENSE"
+	],
 	"scripts": {
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",
 		"lint:ci": "biome ci",
 		"format": "biome format . --write",
-		"prepublishOnly": "tsup"
+		"prepublishOnly": "tsup dist/index.d.mts"
 	},
 	"keywords": [
 		"Config Manager"

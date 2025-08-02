@@ -40,6 +40,7 @@ describe('YamlLoaderStrategy', () => {
 			{
 				config: {
 					activate: {
+						// biome-ignore lint/suspicious/noTemplateCurlyInString: <This is the parsed value from YAMl and is the expected behaviour>
 						'on-profile': '${PROFILE}',
 					},
 				},

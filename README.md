@@ -24,7 +24,7 @@ Modern applications need more than just `.env` loading. They need flexible and p
 Real-world applications deal with multiple layers of configuration. This gets complicated as the applications expand it's support to Multitenancy. Thiran allows hierarchical merging of configuration files so that:
 
 - Common configurations stay DRY
-    - Reference config
+    - Reference config-path
     ```yaml
     auth:
         base-path: https://auth-server
@@ -36,6 +36,7 @@ Real-world applications deal with multiple layers of configuration. This gets co
 - Environment-specific values cleanly override defaults
 - Developers gain predictable and structured config composition
 
+For more details, refer to [overview](./docs/OVERVIEW.md)
 
 ### Goes Beyond Twelve-Factor App
 
@@ -53,6 +54,7 @@ Thiran enhances this principle by:
     The value for `SCHEMA` is substituted from environment variables
 - Allowing *config hydration* before validation — useful for secrets, IAM, Vault, etc.
 - Providing runtime schema validation for safer, production-ready configurations
+For more details, refer to [overview](./docs/OVERVIEW.md)
 
 
 ## What does Thiran enable?

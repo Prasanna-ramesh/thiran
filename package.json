@@ -5,6 +5,26 @@
 	"engines": {
 		"node": ">=22"
 	},
+	"exports": {
+		".": {
+			"import": {
+				"import": "./dist/index.mjs",
+				"types": "dist/index.d.ts"
+			},
+			"require": {
+				"types": "dist/index.d.ts",
+				"require": "./dist/index.js"
+			}
+		}
+	},
+	"files": [
+		"dist",
+		"package.json",
+		"README.md",
+		"docs",
+		"thiran.png",
+		"LICENSE"
+	],
 	"scripts": {
 		"test": "vitest run",
 		"test:coverage": "vitest run --coverage",

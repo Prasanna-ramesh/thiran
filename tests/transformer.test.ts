@@ -18,6 +18,7 @@ describe('Transformer', () => {
 			config: {
 				defaultProfile: 'development',
 				activate: {
+					// biome-ignore lint/suspicious/noTemplateCurlyInString: <This is the parsed value from YAMl and is the expected behaviour>
 					onProfile: '${config.defaultProfile}',
 				},
 			},
@@ -42,6 +43,7 @@ describe('Transformer', () => {
 		const configurations = {
 			config: {
 				activate: {
+					// biome-ignore lint/suspicious/noTemplateCurlyInString: <This is the parsed value from YAMl and is the expected behaviour>
 					onProfile: '${PROFILE}',
 				},
 			},

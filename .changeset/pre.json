@@ -4,5 +4,5 @@
 	"initialVersions": {
 		"thiran": "0.0.0"
 	},
-	"changesets": ["busy-times-love"]
+	"changesets": []
 }

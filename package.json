@@ -5,6 +5,9 @@
 	"engines": {
 		"node": ">=22"
 	},
+	"publishConfig": {
+		"access": "public"
+	},
 	"exports": {
 		".": {
 			"import": {
@@ -31,7 +34,7 @@
 		"lint:ci": "biome ci",
 		"format": "biome format . --write",
 		"prepublishOnly": "tsup",
-		"release": "changeset publish"
+		"publish": "changeset publish"
 	},
 	"keywords": [
 		"Config Manager"

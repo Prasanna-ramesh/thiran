@@ -1,5 +1,5 @@
 <h1 style="text-align: center">
-    <img alt="Thiran logo" height=50 width=50 src="./thiran.png"/>
+    <img alt="Thiran logo" height=50 width=50 src="https://raw.githubusercontent.com/Prasanna-ramesh/thiran/refs/heads/main/thiran.png"/>
     <br />
     Thiran
 </h1>

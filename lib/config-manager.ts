@@ -23,7 +23,7 @@ export class ConfigManager<Config = unknown> {
 	private readonly loaderManager: LoaderManager;
 	private readonly transformer: Transformer;
 
-	private configurations: Config | null = null;
+	private _config: Config | null = null;
 
 	constructor(
 		private readonly settings: {
@@ -58,12 +58,12 @@ export class ConfigManager<Config = unknown> {
 
 		const result = await validate(hydratedConfigurations);
 		if (!result.issues) {
-			this.configurations = result.value;
+			this._config = result.value;
 
 			// cleanup
 			registry.clear();
 
-			return this.configurations;
+			return this._config;
 		}
 
 		result.issues.forEach(({ message }) => {
@@ -97,5 +97,18 @@ export class ConfigManager<Config = unknown> {
 
 		// TODO: Based on the usage, support expanding environment variables (e.g.) variables with ${} value in process.env
 		registry.safeSet('environmentVariables', camelizedEnvVar);
+	}
+
+	/**
+	 * Loaded configurations
+	 *
+	 * @throws {@link Error} when config is not initialized
+	 * */
+	get config(): Config {
+		if (!this._config) {
+			throw new Error('Configuration not loaded');
+		}
+
+		return this._config;
 	}
 }

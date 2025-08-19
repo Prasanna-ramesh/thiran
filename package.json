@@ -8,6 +8,8 @@
 	"publishConfig": {
 		"access": "public"
 	},
+	"homepage": "https://github.com/Prasanna-ramesh/thiran",
+	"repository": "https://github.com/Prasanna-ramesh/thiran",
 	"exports": {
 		".": {
 			"import": {

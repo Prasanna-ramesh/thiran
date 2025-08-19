@@ -1,5 +1,4 @@
 <h1 style="text-align: center">
-    <img alt="Thiran logo" height=50 width=50 src="https://raw.githubusercontent.com/Prasanna-ramesh/thiran/refs/heads/main/thiran.png"/>
     <br />
     Thiran
 </h1>
@@ -8,7 +7,7 @@
 </p>
 <div style="text-align: center">
 
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=thiran&metric=coverage)](https://sonarcloud.io/summary/overall?id=thiran&branch=main) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=thiran&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=thiran)
+[![NPM](https://img.shields.io/npm/v/thiran)](https://www.npmjs.com/package/thiran) [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=thiran&metric=coverage)](https://sonarcloud.io/summary/overall?id=thiran&branch=main) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=thiran&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=thiran)
 
 </div>
 

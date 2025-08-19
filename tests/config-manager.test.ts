@@ -27,4 +27,10 @@ describe('ConfigManager', () => {
 		const configManager = new ConfigManager({ validationSchema: validationSchemaMock });
 		expect(() => configManager.load()).not.toThrow();
 	});
+
+	it('should throw error when configuration are access before loading', () => {
+		const configManager = new ConfigManager({ validationSchema: validationSchemaMock });
+
+		expect(() => configManager.config).toThrowError('Configuration not loaded');
+	});
 });

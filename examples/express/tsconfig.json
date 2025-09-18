@@ -1,0 +1,16 @@
+{
+	"include": ["."],
+	"exclude": ["node_modules"],
+	"compilerOptions": {
+		"target": "ES2024",
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"noImplicitAny": true,
+		"rootDir": "./",
+		"module": "NodeNext",
+		"moduleResolution": "nodenext",
+		"esModuleInterop": true,
+		"outDir": "dist",
+		"allowJs": false
+	}
+}

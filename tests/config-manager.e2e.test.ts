@@ -4,7 +4,7 @@ import { ConfigManager } from '@/lib/config-manager';
 describe('ConfigManager E2E', () => {
 	beforeAll(() => {
 		Object.entries({
-			'config.baseLocation': 'tests/sample-configurations/yaml-1.1',
+			'config.baseLocation': 'tests/sample-configurations/yaml-1.2',
 			'config.additionalLocation': 'application.tenant-a.yaml, application.tenant-b.yaml',
 		}).forEach(([key, value]) => {
 			vi.stubEnv(key, value);

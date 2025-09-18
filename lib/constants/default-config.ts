@@ -7,7 +7,8 @@ export const defaultConfigProperties: ConfigProperties = {
 	 * Base location where default and additional configuration files can be found
 	 *
 	 * @defaultValue
-	 * config.baseLocation = ./config (also config.base-location works)
+	 * config.baseLocation = ./config
+	 * Instead of config.baseLocation, config.base-location or CONFIG_BASE-LOCATION can be used
 	 */
 	baseLocation: {
 		name: 'config.baseLocation',
@@ -25,10 +26,11 @@ export const defaultConfigProperties: ConfigProperties = {
 	},
 	/**
 	 * Additional configuration file(s).
-	 * Incase of multiple files, separate them with commas
+	 * In case of multiple files, separate them with commas
 	 *
 	 * @defaultValue
 	 * config.additionalLocation (also config.additional-location works)
+	 * Instead of config.additionalLocation, **config.additional-location or CONFIG_ADDITIONAL-LOCATION** can be used
 	 *
 	 * @example
 	 * config.additionalLocation = application-dev.yaml,application-tenant.yaml
@@ -38,7 +40,7 @@ export const defaultConfigProperties: ConfigProperties = {
 	},
 	/**
 	 * Currently active profile(s). Should be set through env variable.
-	 * Incase of multiple profiles, separate profile with comma
+	 * In case of multiple profiles, separate profile with comma
 	 *
 	 * @defaultValue
 	 * profiles.active=default
@@ -60,6 +62,7 @@ export const defaultConfigProperties: ConfigProperties = {
 	 *
 	 * @defaultValue
 	 * config.activate.onProfile (also config.activate.on-profile works)
+	 * Instead of config.activate.onProfile, **config.activate.on-profile or CONFIG_ACTIVATE_ON-PROFILE** can be used
 	 * If this property is missing the config is configured to the default
 	 *
 	 * @remarks

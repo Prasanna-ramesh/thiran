@@ -11,6 +11,18 @@
  */
 export const camelCase = (text: string): string =>
 	text
-		.split('-')
-		.map((segment, index) => (index === 0 ? segment : segment.charAt(0).toUpperCase() + segment.slice(1).toLowerCase()))
-		.join('');
+		.split('_')
+		.map((segment) => {
+			if (segment.includes('.')) {
+				return segment;
+			}
+
+			return segment
+				.toLowerCase()
+				.split('-') // convert dashes into camelCase boundaries
+				.map((word, index) =>
+					index === 0 ? word.toLowerCase() : word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+				)
+				.join('');
+		})
+		.join('.');

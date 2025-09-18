@@ -30,8 +30,6 @@ export interface ILoader {
 	 * Each strategy can implement own way to load the config files
 	 *
 	 * @param configurationFileLocation Absolute path of the configuration file
-	 * @returns
-	 * Array or Object based on the profiles in config file
 	 */
 	loadConfiguration(configurationFileLocation: string): unknown;
 }

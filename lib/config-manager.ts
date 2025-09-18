@@ -1,4 +1,5 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
+import { ValidationException } from '@/lib/utils/exception';
 import { defaultConfigProperties } from './constants/default-config';
 import { registry } from './helper/registry';
 import { LoaderManager } from './loaders/loader.manager';
@@ -32,20 +33,26 @@ export class ConfigManager<Config = unknown> {
 				/**
 				 * To hydrate config before performing validation
 				 */
-				beforeValidate: <HydratedConfig extends Partial<Config>>(
-					config: HydratedConfig
-				) => HydratedConfig | Promise<HydratedConfig>;
+				beforeValidate: <MaybeValidConfig extends Partial<Config>>(
+					config: MaybeValidConfig
+				) => MaybeValidConfig | Promise<MaybeValidConfig>;
 			};
 		}
 	) {
 		// setup
-		this.camelizeConfigurationProperties();
-		this.camelizeEnvironmentVariables();
+		this.camelizeConfigProperties();
+		this.camelizeEnvVars();
 
 		this.loaderManager = new LoaderManager(this.strategies.loaders);
 		this.transformer = new Transformer();
 	}
 
+	/**
+	 * Orchestrator for loading configuration using different strategies.
+	 * After loading the configuration, validates the result with the schema validator
+	 *
+	 * @throws ValidationException
+	 * */
 	async load() {
 		const mergedConfigurations = this.loaderManager.loadConfigurations();
 		const transformedConfigurations = this.transformer.expand(mergedConfigurations);
@@ -66,14 +73,12 @@ export class ConfigManager<Config = unknown> {
 			return this._config;
 		}
 
-		result.issues.forEach(({ message }) => {
-			logger.error(message);
-		});
+		const issues = result.issues.map(({ message }) => message);
 
-		throw new Error('Validation failed. Terminating process');
+		throw new ValidationException(`Validation failed. Reason: ${issues.join(', ')}`);
 	}
 
-	private camelizeConfigurationProperties() {
+	private camelizeConfigProperties() {
 		(Object.keys(this.configProperties) as (keyof ConfigProperties)[]).forEach((key) => {
 			this.configProperties[key] = {
 				...this.configProperties[key],
@@ -84,19 +89,19 @@ export class ConfigManager<Config = unknown> {
 		registry.safeSet('configProperties', this.configProperties);
 	}
 
-	private camelizeEnvironmentVariables() {
-		const camelizedEnvVar: Record<string, string | undefined> = {};
+	private camelizeEnvVars() {
+		const camelizedEnvVars: Record<string, string | undefined> = {};
 
 		Object.entries(process.env).forEach(([key, value]) => {
 			if (key.includes(this.envSeparator)) {
-				camelizedEnvVar[camelCase(key)] = value;
+				camelizedEnvVars[camelCase(key)] = value;
 			} else {
-				camelizedEnvVar[key] = value;
+				camelizedEnvVars[key] = value;
 			}
 		});
 
 		// TODO: Based on the usage, support expanding environment variables (e.g.) variables with ${} value in process.env
-		registry.safeSet('environmentVariables', camelizedEnvVar);
+		registry.safeSet('envVars', camelizedEnvVars);
 	}
 
 	/**

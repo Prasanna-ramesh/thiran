@@ -12,12 +12,12 @@ export class LoaderManager {
 		json: ['.json'],
 	};
 
-	private readonly environmentVariables: Store['environmentVariables'];
+	private readonly environmentVariables: Store['envVars'];
 	private readonly configProperties: Store['configProperties'];
 	private readonly activeProfiles: string[];
 
 	constructor(private readonly loader: Strategies['loaders']) {
-		this.environmentVariables = registry.strictGet('environmentVariables');
+		this.environmentVariables = registry.strictGet('envVars');
 		this.configProperties = registry.strictGet('configProperties');
 
 		const { activeProfiles } = this.configProperties;
@@ -69,7 +69,7 @@ export class LoaderManager {
 	 * TODO: allow users to convert environment variables into object without YAML and JSON file
 	 */
 	private getConfigurationFilesLocation(): string[] {
-		const environmentVariables = registry.strictGet('environmentVariables');
+		const environmentVariables = registry.strictGet('envVars');
 		const configProperties = registry.strictGet('configProperties');
 
 		const { baseLocation, defaultConfigurationFile, additionalConfigurationFiles } = configProperties;

@@ -4,7 +4,7 @@ import { ConfigManager } from '@/lib/config-manager';
 describe('ConfigManager E2E', () => {
 	beforeAll(() => {
 		Object.entries({
-			'config.baseLocation': 'tests/sample-configurations/yaml',
+			'config.baseLocation': 'tests/sample-configurations/yaml-1.1',
 			'config.additionalLocation': 'application.tenant-a.yaml, application.tenant-b.yaml',
 		}).forEach(([key, value]) => {
 			vi.stubEnv(key, value);
@@ -37,7 +37,9 @@ describe('ConfigManager E2E', () => {
 		});
 
 		// then
-		expect(configManager.load()).resolves.toMatchObject({
+		const config = await configManager.load();
+
+		expect(config).toMatchObject({
 			config: {
 				activate: {
 					onProfile: 'default, local, development',

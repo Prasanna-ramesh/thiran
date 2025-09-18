@@ -57,7 +57,7 @@ describe('LoaderManager', () => {
 		['filename ending with .yml extension', 'application.yml'],
 	])('should invoke YAML loader for %s', (_, defaultConfigurationFileName) => {
 		// given
-		registry.safeSet('environmentVariables', {
+		registry.safeSet('envVars', {
 			[defaultConfigProperties.defaultConfigurationFile.name]: defaultConfigurationFileName,
 		});
 
@@ -80,7 +80,7 @@ describe('LoaderManager', () => {
 
 	it('should invoke JSON loader for filename ending with .json extension', () => {
 		// given
-		registry.safeSet('environmentVariables', {
+		registry.safeSet('envVars', {
 			[defaultConfigProperties.defaultConfigurationFile.name]: 'application.json',
 		});
 
@@ -103,7 +103,7 @@ describe('LoaderManager', () => {
 
 	it('should throw error for unsupported extension', () => {
 		// given
-		registry.safeSet('environmentVariables', {
+		registry.safeSet('envVars', {
 			[defaultConfigProperties.defaultConfigurationFile.name]: 'application.txt',
 		});
 

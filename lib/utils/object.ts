@@ -114,9 +114,12 @@ export const set = (object: Record<string, unknown>, path: string, value: unknow
 		if (count === segments.length - 1) {
 			currentObject[segment] = value;
 		} else {
-			if (!(segment in currentObject)) {
+			// if the segment is missing, or the segment exists but is not an object and the current value is an object
+			// create an empty object at the segment. Can be overridden later if the value is not an object
+			if (!(segment in currentObject) || !isObject(currentObject[segment])) {
 				currentObject[segment] = {};
 			}
+
 			currentObject = currentObject[segment] as Record<string, unknown>;
 		}
 	}

@@ -58,7 +58,7 @@ describe('LoaderManager', () => {
 	])('should invoke YAML loader for %s', (_, defaultConfigurationFileName) => {
 		// given
 		registry.safeSet('envVars', {
-			[defaultConfigProperties.defaultConfigurationFile.name]: defaultConfigurationFileName,
+			[defaultConfigProperties.defaultConfigFile.name]: defaultConfigurationFileName,
 		});
 
 		const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
@@ -81,7 +81,7 @@ describe('LoaderManager', () => {
 	it('should invoke JSON loader for filename ending with .json extension', () => {
 		// given
 		registry.safeSet('envVars', {
-			[defaultConfigProperties.defaultConfigurationFile.name]: 'application.json',
+			[defaultConfigProperties.defaultConfigFile.name]: 'application.json',
 		});
 
 		const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });
@@ -104,7 +104,7 @@ describe('LoaderManager', () => {
 	it('should throw error for unsupported extension', () => {
 		// given
 		registry.safeSet('envVars', {
-			[defaultConfigProperties.defaultConfigurationFile.name]: 'application.txt',
+			[defaultConfigProperties.defaultConfigFile.name]: 'application.txt',
 		});
 
 		const loaderManager = new LoaderManager({ yaml: yamlLoaderMock, json: jsonLoaderMock });

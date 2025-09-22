@@ -12,8 +12,8 @@ type ConfigPropertyDetails = {
  */
 type ConfigPropertyNames =
 	| 'baseLocation'
-	| 'defaultConfigurationFile'
-	| 'additionalConfigurationFiles'
+	| 'defaultConfigFile'
+	| 'additionalConfigFiles'
 	| 'activeProfiles'
 	| 'onProfile';
 

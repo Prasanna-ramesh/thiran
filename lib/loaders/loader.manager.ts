@@ -70,13 +70,12 @@ export class LoaderManager {
 		const envVars = registry.strictGet('envVars');
 		const configProperties = registry.strictGet('configProperties');
 
-		const { baseLocation, defaultConfigurationFile, additionalConfigurationFiles } = configProperties;
+		const { baseLocation, defaultConfigFile, additionalConfigFiles } = configProperties;
 
 		const baseLocationValue = envVars[baseLocation.name] ?? baseLocation.defaultValue;
-		const defaultConfigFileValue =
-			envVars[defaultConfigurationFile.name]?.trim() ?? defaultConfigurationFile.defaultValue;
+		const defaultConfigFileValue = envVars[defaultConfigFile.name]?.trim() ?? defaultConfigFile.defaultValue;
 		const additionalConfigurationFilesValue =
-			envVars[additionalConfigurationFiles.name]?.split(',')?.map((filename) => filename.trim()) ?? [];
+			envVars[additionalConfigFiles.name]?.split(',')?.map((filename) => filename.trim()) ?? [];
 
 		if (!baseLocationValue) {
 			throw new Error('Base location cannot be empty');

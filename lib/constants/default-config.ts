@@ -20,7 +20,7 @@ export const defaultConfigProperties: ConfigProperties = {
 	 * @defaultValue
 	 * config.location = application.yaml
 	 */
-	defaultConfigurationFile: {
+	defaultConfigFile: {
 		name: 'config.location',
 		defaultValue: 'application.yaml',
 	},
@@ -35,7 +35,7 @@ export const defaultConfigProperties: ConfigProperties = {
 	 * @example
 	 * config.additionalLocation = application-dev.yaml,application-tenant.yaml
 	 */
-	additionalConfigurationFiles: {
+	additionalConfigFiles: {
 		name: 'config.additionalLocation',
 	},
 	/**

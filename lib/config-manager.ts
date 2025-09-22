@@ -10,8 +10,6 @@ import { camelCase } from './utils/formatter';
 import { logger } from './utils/logger';
 
 export class ConfigManager<Config = unknown> {
-	private readonly envSeparator = '.';
-
 	private readonly configProperties: ConfigProperties = defaultConfigProperties;
 	private readonly strategies: Strategies = {
 		loaders: {
@@ -89,18 +87,21 @@ export class ConfigManager<Config = unknown> {
 		registry.safeSet('configProperties', this.configProperties);
 	}
 
+	/**
+	 * Camelizes the environment variables and stores in the registry.
+	 * Both original and camelized keys are stored.
+	 * The main reason to store both is that the key in the env variable and the config property can be diferent casing.
+	 *
+	 * (e.g.) Base location property name configured as `config.baseLocation` but is available in env variable as `CONFIG_BASE-LOCATION` or `config.base-location`
+	 * */
 	private camelizeEnvVars() {
 		const camelizedEnvVars: Record<string, string | undefined> = {};
 
 		for (const [key, value] of Object.entries(process.env)) {
-			if (key.includes(this.envSeparator)) {
-				camelizedEnvVars[camelCase(key)] = value;
-			} else {
-				camelizedEnvVars[key] = value;
-			}
+			camelizedEnvVars[camelCase(key)] = value;
+			camelizedEnvVars[key] = value;
 		}
 
-		// TODO: Based on the usage, support expanding environment variables (e.g.) variables with ${} value in process.env
 		registry.safeSet('envVars', camelizedEnvVars);
 	}
 

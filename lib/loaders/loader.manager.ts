@@ -34,7 +34,7 @@ export class LoaderManager {
 	 * @internal
 	 */
 	loadConfigurations(): Record<string, unknown> {
-		const configurationFilesLocation = this.getConfigurationFilesLocation();
+		const configurationFilesLocation = this.getConfigFilesLocation();
 
 		const mergedConfigurations = configurationFilesLocation
 			.flatMap((configurationFileLocation) => {
@@ -65,30 +65,28 @@ export class LoaderManager {
 	 * Also checks if the file exists. If the file is missing, an error is thrown
 	 *
 	 * @internal
-	 *
-	 * TODO: allow users to convert environment variables into object without YAML and JSON file
 	 */
-	private getConfigurationFilesLocation(): string[] {
-		const environmentVariables = registry.strictGet('envVars');
+	private getConfigFilesLocation(): string[] {
+		const envVars = registry.strictGet('envVars');
 		const configProperties = registry.strictGet('configProperties');
 
 		const { baseLocation, defaultConfigurationFile, additionalConfigurationFiles } = configProperties;
 
-		const baseLocationValue = environmentVariables[baseLocation.name] ?? baseLocation.defaultValue;
-		const defaultConfigurationFileValue =
-			environmentVariables[defaultConfigurationFile.name]?.trim() ?? defaultConfigurationFile.defaultValue;
+		const baseLocationValue = envVars[baseLocation.name] ?? baseLocation.defaultValue;
+		const defaultConfigFileValue =
+			envVars[defaultConfigurationFile.name]?.trim() ?? defaultConfigurationFile.defaultValue;
 		const additionalConfigurationFilesValue =
-			environmentVariables[additionalConfigurationFiles.name]?.split(',')?.map((filename) => filename.trim()) ?? [];
+			envVars[additionalConfigurationFiles.name]?.split(',')?.map((filename) => filename.trim()) ?? [];
 
 		if (!baseLocationValue) {
-			return [];
+			throw new Error('Base location cannot be empty');
 		}
 
-		if (!defaultConfigurationFileValue) {
+		if (!defaultConfigFileValue) {
 			throw new Error('Default configuration file location is missing');
 		}
 
-		return [defaultConfigurationFileValue, ...additionalConfigurationFilesValue].map((configFile) => {
+		return [defaultConfigFileValue, ...additionalConfigurationFilesValue].map((configFile) => {
 			const pathFromRoot = resolve(join(baseLocationValue, configFile));
 			const fileExists = existsSync(pathFromRoot);
 
@@ -105,11 +103,8 @@ export class LoaderManager {
 			return mergedConfig;
 		}
 
-		// TODO: camelize config
-		const profilesInConfig =
-			get<string>(config, this.configProperties.onProfile.name, true)
-				?.split(',')
-				.map((profile) => profile.trim()) ?? [];
+		const onProfile = get(config, this.configProperties.onProfile.name, true);
+		const profilesInConfig = typeof onProfile === 'string' ? onProfile.split(',').map((profile) => profile.trim()) : [];
 
 		const isDefaultProfileActive = profilesInConfig.length === 0 && this.activeProfiles.includes(DEFAULT_PROFILE_NAME);
 		const isActiveProfile = this.activeProfiles.some((activeProfile) => profilesInConfig.includes(activeProfile));

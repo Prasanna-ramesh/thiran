@@ -1,4 +1,3 @@
-import { InvalidConfigException } from '@/lib/utils/exception';
 import { registry } from './helper/registry';
 import { get, isArrayOrObject } from './utils/object';
 
@@ -60,12 +59,10 @@ export class Transformer {
 			}
 
 			if (valueFromEnvVar && typeof valueFromExistingConfig !== 'string') {
-				throw new InvalidConfigException(
-					`Invalid reference. ${keyToReplace} is not a string rather ${typeof valueFromExistingConfig}`
-				);
+				throw new Error(`Invalid reference. ${keyToReplace} is not a string rather ${typeof valueFromExistingConfig}`);
 			}
 
-			throw new InvalidConfigException(`Unable to find the key ${keyToReplace}`);
+			throw new Error(`Unable to find the key ${keyToReplace}`);
 		});
 	}
 }

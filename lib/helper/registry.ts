@@ -1,4 +1,3 @@
-import { ForbiddenException } from '@/lib/utils/exception';
 import type { ConfigProperties } from '../types';
 
 export type Store = {
@@ -22,13 +21,13 @@ class Registry {
 	 * @param key Name of key in the store
 	 * @param value Value to set
 	 *
-	 * @throws ForbiddenException when the key already exists in the store
+	 * @throws Error when the key already exists in the store
 	 */
 	safeSet<Key extends keyof Store>(key: Key, value: Store[Key]) {
 		const existingValue = this.store.get(key);
 
 		if (existingValue) {
-			throw new ForbiddenException(`${key} already exists in the store`);
+			throw new Error(`${key} already exists in the store`);
 		}
 
 		this.store.set(key, value);
@@ -39,7 +38,7 @@ class Registry {
 	 *
 	 * @param key Name of key in the store
 	 *
-	 * @throws InvalidConfigException when the key is missing
+	 * @throws Error when the key is missing
 	 *
 	 * @internal
 	 */
@@ -47,7 +46,7 @@ class Registry {
 		const value = this.store.get(key);
 
 		if (!value) {
-			throw new ForbiddenException(`${key} is missing in the store`);
+			throw new Error(`${key} is missing in the store`);
 		}
 
 		return value as Store[Key];

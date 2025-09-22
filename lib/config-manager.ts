@@ -1,5 +1,4 @@
 import type { StandardSchemaV1 } from '@standard-schema/spec';
-import { ValidationException } from '@/lib/utils/exception';
 import { defaultConfigProperties } from './constants/default-config';
 import { registry } from './helper/registry';
 import { LoaderManager } from './loaders/loader.manager';
@@ -51,7 +50,7 @@ export class ConfigManager<Config = unknown> {
 	 * Orchestrator for loading configuration using different strategies.
 	 * After loading the configuration, validates the result with the schema validator
 	 *
-	 * @throws ValidationException
+	 * @throws Error
 	 * */
 	async load() {
 		const mergedConfigurations = this.loaderManager.loadConfigurations();
@@ -64,18 +63,19 @@ export class ConfigManager<Config = unknown> {
 		logger.log(`Validation with Standard Schema version ${version} using ${vendor} vendor`);
 
 		const result = await validate(hydratedConfigurations);
+
+		// cleanup
+		registry.clear();
+
 		if (!result.issues) {
 			this._config = result.value;
-
-			// cleanup
-			registry.clear();
 
 			return this._config;
 		}
 
 		const issues = result.issues.map(({ message }) => message);
 
-		throw new ValidationException(`Validation failed. Reason: ${issues.join(', ')}`);
+		throw new Error(`Validation failed. Reason: ${issues.join('; ')}`);
 	}
 
 	private camelizeConfigProperties() {

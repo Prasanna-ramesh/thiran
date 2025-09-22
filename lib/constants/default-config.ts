@@ -29,7 +29,7 @@ export const defaultConfigProperties: ConfigProperties = {
 	 * In case of multiple files, separate them with commas
 	 *
 	 * @defaultValue
-	 * config.additionalLocation (also config.additional-location works)
+	 * This has no default value
 	 * Instead of config.additionalLocation, **config.additional-location or CONFIG_ADDITIONAL-LOCATION** can be used
 	 *
 	 * @example

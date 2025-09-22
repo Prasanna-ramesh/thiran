@@ -21,8 +21,6 @@ describe('registry', () => {
 		registry.safeSet('configProperties', defaultConfigProperties);
 
 		// when / then
-		expect(() => registry.strictGet('environmentVariables')).toThrowError(
-			'environmentVariables is missing in the store'
-		);
+		expect(() => registry.strictGet('envVars')).toThrowError('envVars is missing in the store');
 	});
 });

@@ -10,7 +10,6 @@ export class JsonLoaderStrategy implements ILoader {
 	loadConfiguration(configurationFileLocation: string): unknown {
 		const contentString = readFileSync(configurationFileLocation, 'utf-8');
 
-		const content = JSON.parse(contentString);
-		return content;
+		return JSON.parse(contentString);
 	}
 }

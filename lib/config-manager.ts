@@ -79,12 +79,12 @@ export class ConfigManager<Config = unknown> {
 	}
 
 	private camelizeConfigProperties() {
-		(Object.keys(this.configProperties) as (keyof ConfigProperties)[]).forEach((key) => {
+		for (const key of Object.keys(this.configProperties) as (keyof ConfigProperties)[]) {
 			this.configProperties[key] = {
 				...this.configProperties[key],
 				name: camelCase(this.configProperties[key].name),
 			};
-		});
+		}
 
 		registry.safeSet('configProperties', this.configProperties);
 	}
@@ -92,13 +92,13 @@ export class ConfigManager<Config = unknown> {
 	private camelizeEnvVars() {
 		const camelizedEnvVars: Record<string, string | undefined> = {};
 
-		Object.entries(process.env).forEach(([key, value]) => {
+		for (const [key, value] of Object.entries(process.env)) {
 			if (key.includes(this.envSeparator)) {
 				camelizedEnvVars[camelCase(key)] = value;
 			} else {
 				camelizedEnvVars[key] = value;
 			}
-		});
+		}
 
 		// TODO: Based on the usage, support expanding environment variables (e.g.) variables with ${} value in process.env
 		registry.safeSet('envVars', camelizedEnvVars);

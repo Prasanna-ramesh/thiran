@@ -79,7 +79,7 @@ export const camelizeAndMerge = (
 		}
 	}
 
-	Object.entries(source).forEach(([key, value]) => {
+	for (const [key, value] of Object.entries(source)) {
 		const newPath = path ? `${path}.${camelCase(key)}` : camelCase(key);
 
 		if (typeof value === 'object') {
@@ -87,7 +87,7 @@ export const camelizeAndMerge = (
 		} else {
 			set(target, newPath, value);
 		}
-	});
+	}
 
 	return target;
 };

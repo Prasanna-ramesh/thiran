@@ -1,6 +1,6 @@
 # Thiran
 
-**Thiran** (திறன் - [Tamil](https://en.wikipedia.org/wiki/Tamil_language)) is a Spring inspired flexible and efficient configuration manager.
+**Thiran** (திறன் - efficiency in [Tamil](https://en.wikipedia.org/wiki/Tamil_language)) is a Spring inspired flexible and efficient configuration manager.
 It supports loading, merging, config hydration and validation with bring your own validator that supports [Standard Schema](https://standardschema.dev/).
 
 ## Installation

@@ -1,0 +1,5 @@
+---
+"thiran": patch
+---
+
+Adjust readme

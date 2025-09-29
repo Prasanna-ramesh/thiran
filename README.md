@@ -1,7 +1,9 @@
-<div style="display: flex; justify-content: center; gap: 8px">
-  <img src="https://raw.githubusercontent.com/Prasanna-ramesh/thiran/main/docs/public/thiran.svg" width="40" height="40" alt="Thiran Logo" />
-  <h1 style="margin: 0;">Thiran</h1>
-</div>
+<h1 style="text-align: center">
+  <img src="https://raw.githubusercontent.com/Prasanna-ramesh/thiran/main/docs/public/thiran.svg" width="50" height="50" alt="Thiran Logo" />
+    <br />
+    Thiran
+</h1>
+
 <p style="text-align: center">
     A Spring inspired configuration manager
 </p>

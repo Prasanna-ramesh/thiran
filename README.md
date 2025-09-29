@@ -1,5 +1,5 @@
 <div style="display: flex; justify-content: center; gap: 8px">
-  <img src="https://raw.githubusercontent.com/Prasanna-ramesh/thiran/feat/docs-with-vitepress/docs/public/thiran.svg" width="40" height="40" alt="Thiran Logo" />
+  <img src="https://raw.githubusercontent.com/Prasanna-ramesh/thiran/main/docs/public/thiran.svg" width="40" height="40" alt="Thiran Logo" />
   <h1 style="margin: 0;">Thiran</h1>
 </div>
 <p style="text-align: center">

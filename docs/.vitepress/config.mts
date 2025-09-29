@@ -7,7 +7,7 @@ export default withMermaid({
 		lang: 'en-US',
 		description: 'Config Manager',
 		base: '/thiran/',
-		head: [['link', { rel: 'icon', href: '/thiran.svg' }]],
+		head: [['link', { rel: 'icon', href: '/thiran/thiran.svg' }]],
 		themeConfig: {
 			nav: [{ text: 'Guide', link: '/guides/' }],
 			sidebar: {

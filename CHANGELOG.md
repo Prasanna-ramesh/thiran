@@ -1,5 +1,18 @@
 # thiran
 
+## 0.1.0-alpha.3
+
+### Minor Changes
+
+- 081fe1d: - Support screaming snake case
+  - Adjust camelizing env var names
+
+### Patch Changes
+
+- f1ecf70: Adjust readme
+- 2c3d633: adjust icon URL in readme
+- e51effb: Homepage in package.json
+
 ## 0.1.0-alpha.2
 
 ### Minor Changes

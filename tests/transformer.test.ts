@@ -7,7 +7,7 @@ describe('Transformer', () => {
 
 	beforeAll(() => {
 		registry.safeSet('configProperties', defaultConfigProperties);
-		registry.safeSet('environmentVariables', {
+		registry.safeSet('envVars', {
 			PROFILE: 'default, local',
 		});
 	});

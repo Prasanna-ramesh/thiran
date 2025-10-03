@@ -18,7 +18,7 @@ describe('ConfigManager', () => {
 		// given
 		vi.spyOn(LoaderManager.prototype, 'loadConfigurations').mockImplementation(() => {
 			return {
-				environmentVariables: registry.strictGet('environmentVariables'),
+				envVars: registry.strictGet('envVars'),
 				configProperties: registry.strictGet('configProperties'),
 			};
 		});

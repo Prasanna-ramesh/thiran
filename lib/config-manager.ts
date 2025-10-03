@@ -10,8 +10,6 @@ import { camelCase } from './utils/formatter';
 import { logger } from './utils/logger';
 
 export class ConfigManager<Config = unknown> {
-	private readonly envSeparator = '.';
-
 	private readonly configProperties: ConfigProperties = defaultConfigProperties;
 	private readonly strategies: Strategies = {
 		loaders: {
@@ -32,20 +30,26 @@ export class ConfigManager<Config = unknown> {
 				/**
 				 * To hydrate config before performing validation
 				 */
-				beforeValidate: <HydratedConfig extends Partial<Config>>(
-					config: HydratedConfig
-				) => HydratedConfig | Promise<HydratedConfig>;
+				beforeValidate: <MaybeValidConfig extends Partial<Config>>(
+					config: MaybeValidConfig
+				) => MaybeValidConfig | Promise<MaybeValidConfig>;
 			};
 		}
 	) {
 		// setup
-		this.camelizeConfigurationProperties();
-		this.camelizeEnvironmentVariables();
+		this.camelizeConfigProperties();
+		this.camelizeEnvVars();
 
 		this.loaderManager = new LoaderManager(this.strategies.loaders);
 		this.transformer = new Transformer();
 	}
 
+	/**
+	 * Orchestrator for loading configuration using different strategies.
+	 * After loading the configuration, validates the result with the schema validator
+	 *
+	 * @throws Error
+	 * */
 	async load() {
 		const mergedConfigurations = this.loaderManager.loadConfigurations();
 		const transformedConfigurations = this.transformer.expand(mergedConfigurations);
@@ -57,46 +61,48 @@ export class ConfigManager<Config = unknown> {
 		logger.log(`Validation with Standard Schema version ${version} using ${vendor} vendor`);
 
 		const result = await validate(hydratedConfigurations);
+
+		// cleanup
+		registry.clear();
+
 		if (!result.issues) {
 			this._config = result.value;
-
-			// cleanup
-			registry.clear();
 
 			return this._config;
 		}
 
-		result.issues.forEach(({ message }) => {
-			logger.error(message);
-		});
+		const issues = result.issues.map(({ message }) => message);
 
-		throw new Error('Validation failed. Terminating process');
+		throw new Error(`Validation failed. Reason: ${issues.join('; ')}`);
 	}
 
-	private camelizeConfigurationProperties() {
-		(Object.keys(this.configProperties) as (keyof ConfigProperties)[]).forEach((key) => {
+	private camelizeConfigProperties() {
+		for (const key of Object.keys(this.configProperties) as (keyof ConfigProperties)[]) {
 			this.configProperties[key] = {
 				...this.configProperties[key],
 				name: camelCase(this.configProperties[key].name),
 			};
-		});
+		}
 
 		registry.safeSet('configProperties', this.configProperties);
 	}
 
-	private camelizeEnvironmentVariables() {
-		const camelizedEnvVar: Record<string, string | undefined> = {};
+	/**
+	 * Camelizes the environment variables and stores in the registry.
+	 * Both original and camelized keys are stored.
+	 * The main reason to store both is that the key in the env variable and the config property can be diferent casing.
+	 *
+	 * (e.g.) Base location property name configured as `config.baseLocation` but is available in env variable as `CONFIG_BASE-LOCATION` or `config.base-location`
+	 * */
+	private camelizeEnvVars() {
+		const camelizedEnvVars: Record<string, string | undefined> = {};
 
-		Object.entries(process.env).forEach(([key, value]) => {
-			if (key.includes(this.envSeparator)) {
-				camelizedEnvVar[camelCase(key)] = value;
-			} else {
-				camelizedEnvVar[key] = value;
-			}
-		});
+		for (const [key, value] of Object.entries(process.env)) {
+			camelizedEnvVars[camelCase(key)] = value;
+			camelizedEnvVars[key] = value;
+		}
 
-		// TODO: Based on the usage, support expanding environment variables (e.g.) variables with ${} value in process.env
-		registry.safeSet('environmentVariables', camelizedEnvVar);
+		registry.safeSet('envVars', camelizedEnvVars);
 	}
 
 	/**

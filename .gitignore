@@ -5,3 +5,4 @@ sample-config/**
 coverage
 .idea
 .vscode
+docs/.vitepress/cache

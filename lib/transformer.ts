@@ -27,13 +27,13 @@ export class Transformer {
 			);
 		}
 
-		const configEntires = Object.entries(configurations).map(([key, value]) => {
+		const configEntries = Object.entries(configurations).map(([key, value]) => {
 			const transformedValue = isArrayOrObject(value) ? this.recursiveExpand(value) : this.transformValue(value);
 
 			return [key, transformedValue];
 		});
 
-		return Object.fromEntries(configEntires);
+		return Object.fromEntries(configEntries);
 	}
 
 	private transformValue(value: unknown): unknown {
@@ -44,18 +44,22 @@ export class Transformer {
 		return value;
 	}
 
-	private replaceKey(value: string) {
+	private replaceKey(value: string): string {
 		return value.replaceAll(this.keyToReplaceRegex, (_, keyToReplace) => {
-			const fromEnvironmentVariables = registry.strictGet('environmentVariables')[keyToReplace];
+			const valueFromEnvVar = registry.strictGet('envVars')[keyToReplace];
 
-			if (fromEnvironmentVariables) {
-				return fromEnvironmentVariables;
+			if (valueFromEnvVar) {
+				return valueFromEnvVar;
 			}
 
-			const fromConfiguration = get<string>(this.mergedConfigurationsClone, keyToReplace);
+			const valueFromExistingConfig = get(this.mergedConfigurationsClone, keyToReplace);
 
-			if (fromConfiguration) {
-				return fromConfiguration;
+			if (typeof valueFromExistingConfig === 'string') {
+				return valueFromExistingConfig;
+			}
+
+			if (valueFromEnvVar && typeof valueFromExistingConfig !== 'string') {
+				throw new Error(`Invalid reference. ${keyToReplace} is not a string rather ${typeof valueFromExistingConfig}`);
 			}
 
 			throw new Error(`Unable to find the key ${keyToReplace}`);

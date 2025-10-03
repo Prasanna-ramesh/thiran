@@ -43,10 +43,9 @@ const configManager = new ConfigManager({
 });
 
 configManager.load().then((config) => {
-	
-	app.get("/configs", (_, res) => {
-		res.send(config)
-	})
+	app.get('/configs', (_, res) => {
+		res.send(config);
+	});
 
 	app.listen(config.port, () => {
 		console.log(`Server running on port ${config.port} 🚀`);

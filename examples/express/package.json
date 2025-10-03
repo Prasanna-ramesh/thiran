@@ -5,9 +5,9 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"local": "",
-		"dev": "",
-		"prod": ""
+		"local:start": "tsc && node --env-file .env.local ./dist/server.js",
+		"dev:start": "tsc && node --env-file .env.dev ./dist/server.js",
+		"prod:start": "tsc && node --env-file .env.prod ./dist/server.js"
 	},
 	"keywords": [],
 	"author": "",
@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"express": "5.1.0",
-		"thiran": "0.1.0-alpha.2",
+		"thiran": "0.1.0-alpha.3",
 		"zod": "4.0.17"
 	}
 }

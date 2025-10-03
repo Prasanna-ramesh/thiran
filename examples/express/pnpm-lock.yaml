@@ -12,8 +12,8 @@ importers:
         specifier: 5.1.0
         version: 5.1.0
       thiran:
-        specifier: 0.1.0-alpha.2
-        version: 0.1.0-alpha.2
+        specifier: 0.1.0-alpha.3
+        version: 0.1.0-alpha.3
       zod:
         specifier: 4.0.17
         version: 4.0.17
@@ -307,8 +307,8 @@ packages:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
 
-  thiran@0.1.0-alpha.2:
-    resolution: {integrity: sha512-r4BJG3crV7jstlf6gfjMmBcudVe7XlVFRqO+BnzrOaOb4CMM+rHhLk0sxfNmif6MWy6R27NMbW7LjlejJwRUcA==}
+  thiran@0.1.0-alpha.3:
+    resolution: {integrity: sha512-wzM8rx49jJf/dBc82cCiqGZXwbsYplh1ePliDipmRxU+ycZ41roPxGuB2HlGVgteGwSn0ewS+1VBrhGSYkJnLA==}
     engines: {node: '>=22'}
 
   toidentifier@1.0.1:
@@ -678,7 +678,7 @@ snapshots:
 
   statuses@2.0.2: {}
 
-  thiran@0.1.0-alpha.2:
+  thiran@0.1.0-alpha.3:
     dependencies:
       app-root-path: 3.1.0
       yaml: 2.8.1

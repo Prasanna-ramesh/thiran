@@ -1,33 +1,33 @@
-logLevels: &logLevels
+config:
+  activate:
+    on-profile: default, local
+port: 3000
+log-levels:
   - log
   - error
   - warn
 
-databaseBase: &database
+database:
   type: mysql
   host: localhost
   port: 3306
   database: schema-name
   username: root
-
-config:
-  activate:
-    on-profile: default, local
-port: 3000
-
-database: *database
 auth:
   server-url: https://auth-server.local
 
 ---
 
 port: 3000
-log-levels: *logLevels
+log-levels: [log, warn, error]
 config:
   activate:
     on-profile: development
 database:
-  <<: *database
+  type: mysql
+  port: 3306
+  database: schema-name
+  username: root
   host: database-host.development.endpoint
 auth:
   server-url: https://auth-server.development
@@ -35,12 +35,18 @@ auth:
 ---
 
 port: 3000
-log-levels: *logLevels
+log-levels: 
+  - log
+  - error
+  - warn
 config:
   activate:
     on-profile: production
 database:
-  <<: *database
+  type: mysql
+  port: 3306
+  database: schema-name
+  username: root
   host: database-host.production.endpoint
 auth:
   server-url: https://auth-server.production

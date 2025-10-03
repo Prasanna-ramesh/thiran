@@ -8,7 +8,7 @@
 
 ### Patch Changes
 
-- 699e751: Alpa release releated changes
+- 699e751: Alpha release related changes
 
 ## 0.1.0-alpha.1
 

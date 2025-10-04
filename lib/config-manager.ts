@@ -71,9 +71,14 @@ export class ConfigManager<Config = unknown> {
 			return this._config;
 		}
 
-		const issues = result.issues.map(({ message }) => message);
+		const issues = result.issues.map(({ message, path  }) => {
+			const fullPath = path?.map((segment) =>  typeof segment === 'object' ? segment.key : segment).join('.') ?? 'Missing path in issues'
+			
+			return `Path: ${fullPath}. Message: ${message}`
 
-		throw new Error(`Validation failed. Reason: ${issues.join('; ')}`);
+		}).join('\n');
+
+		throw new Error(`Validation failed. Reason: \n ${issues}`);
 	}
 
 	private camelizeConfigProperties() {

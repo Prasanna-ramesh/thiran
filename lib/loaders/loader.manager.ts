@@ -58,7 +58,7 @@ export class LoaderManager {
 				{}
 			);
 
-		return this.mergeConfig({ mergedConfig, currentConfig: this.environmentVariables });
+		return this.mergeConfig({ mergedConfig, currentConfig: this.environmentVariables, isEnvVar: true });
 	}
 
 	/**

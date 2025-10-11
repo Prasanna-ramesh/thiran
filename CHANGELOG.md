@@ -1,5 +1,11 @@
 # thiran
 
+## 0.1.0-alpha.4
+
+### Minor Changes
+
+- 6798d80: Pain points from example
+
 ## 0.1.0-alpha.3
 
 ### Minor Changes

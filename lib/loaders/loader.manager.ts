@@ -36,7 +36,7 @@ export class LoaderManager {
 	loadConfigurations(): Record<string, unknown> {
 		const configurationFilesLocation = this.getConfigFilesLocation();
 
-		const mergedConfigurations = configurationFilesLocation
+		const mergedConfig = configurationFilesLocation
 			.flatMap((configurationFileLocation) => {
 				const isYaml = this.supportedExtensions.yaml.some((extension) => configurationFileLocation.endsWith(extension));
 				if (isYaml) {
@@ -52,9 +52,13 @@ export class LoaderManager {
 					`Cannot load ${configurationFileLocation}. Only ${Object.values(this.supportedExtensions).join(',')} are supported.`
 				);
 			})
-			.reduce((accumulator: Record<string, unknown>, current) => this.mergeConfig(accumulator, current), {});
+			.reduce(
+				(accumulator: Record<string, unknown>, current) =>
+					this.mergeConfig({ mergedConfig: accumulator, currentConfig: current }),
+				{}
+			);
 
-		return this.mergeConfig(mergedConfigurations, this.environmentVariables);
+		return this.mergeConfig({ mergedConfig, currentConfig: this.environmentVariables, isEnvVar: true });
 	}
 
 	/**
@@ -97,20 +101,28 @@ export class LoaderManager {
 		});
 	}
 
-	private mergeConfig(mergedConfig: Record<string, unknown>, config: unknown): Record<string, unknown> {
-		if (!isObject(config)) {
+	private mergeConfig({
+		mergedConfig,
+		currentConfig,
+		isEnvVar,
+	}: {
+		mergedConfig: Record<string, unknown>;
+		currentConfig: unknown;
+		isEnvVar?: boolean;
+	}): Record<string, unknown> {
+		if (!isObject(currentConfig)) {
 			return mergedConfig;
 		}
 
-		const onProfile = get(config, this.configProperties.onProfile.name, true);
+		const onProfile = get(currentConfig, this.configProperties.onProfile.name, true);
 		const profilesInConfig = typeof onProfile === 'string' ? onProfile.split(',').map((profile) => profile.trim()) : [];
 
 		const isDefaultProfileActive = profilesInConfig.length === 0 && this.activeProfiles.includes(DEFAULT_PROFILE_NAME);
 		const isActiveProfile = this.activeProfiles.some((activeProfile) => profilesInConfig.includes(activeProfile));
 
-		const shouldMerge = isDefaultProfileActive || isActiveProfile;
+		const shouldMerge = isDefaultProfileActive || isActiveProfile || isEnvVar;
 		if (shouldMerge) {
-			return camelizeAndMerge(mergedConfig, config);
+			return camelizeAndMerge(mergedConfig, currentConfig);
 		}
 
 		// At this point, the profile is not required by the user

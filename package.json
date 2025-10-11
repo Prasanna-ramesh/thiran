@@ -14,10 +14,10 @@
 		".": {
 			"import": {
 				"import": "./dist/index.mjs",
-				"types": "dist/index.d.ts"
+				"types": "./dist/index.d.ts"
 			},
 			"require": {
-				"types": "dist/index.d.ts",
+				"types": "./dist/index.d.ts",
 				"require": "./dist/index.js"
 			}
 		}
@@ -26,7 +26,6 @@
 		"dist",
 		"package.json",
 		"README.md",
-		"docs",
 		"LICENSE"
 	],
 	"scripts": {

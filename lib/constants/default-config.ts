@@ -18,10 +18,10 @@ export const defaultConfigProperties: ConfigProperties = {
 	 * Location of the base config file
 	 *
 	 * @defaultValue
-	 * config.location = application.yaml
+	 * config.file = application.yaml
 	 */
 	defaultConfigFile: {
-		name: 'config.location',
+		name: 'config.file',
 		defaultValue: 'application.yaml',
 	},
 	/**
@@ -30,13 +30,13 @@ export const defaultConfigProperties: ConfigProperties = {
 	 *
 	 * @defaultValue
 	 * This has no default value
-	 * Instead of config.additionalLocation, **config.additional-location or CONFIG_ADDITIONAL-LOCATION** can be used
+	 * Instead of config.additionalFiles, **config.additional-location or CONFIG_ADDITIONAL-LOCATION** can be used
 	 *
 	 * @example
-	 * config.additionalLocation = application-dev.yaml,application-tenant.yaml
+	 * config.additionalFiles = application-dev.yaml,application-tenant.yaml
 	 */
 	additionalConfigFiles: {
-		name: 'config.additionalLocation',
+		name: 'config.additionalFiles',
 	},
 	/**
 	 * Currently active profile(s). Should be set through env variable.

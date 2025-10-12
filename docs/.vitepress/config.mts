@@ -15,7 +15,7 @@ export default withMermaid({
 					{
 						text: 'Guide',
 						items: [
-							{ text: 'Introduction', link: '/guides/' },
+							{ text: 'Getting Started', link: '/guides/' },
 							{ text: 'Overview', link: '/guides/overview' },
 							{
 								text: 'Concepts',
@@ -27,6 +27,7 @@ export default withMermaid({
 									{ text: 'Validation', link: '/guides/concepts/validation' },
 								],
 							},
+							{ text: 'Examples', link: '/guides/examples/' },
 						],
 					},
 				],

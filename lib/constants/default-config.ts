@@ -61,7 +61,7 @@ export const defaultConfigProperties: ConfigProperties = {
 	 * based on the active profile(s).
 	 *
 	 * @defaultValue
-	 * config.activate.onProfile (also config.activate.on-profile works)
+	 * config.activate.onProfile (also config.activate.on-profile or CONFIG_ACTIVATE_ON-PROFILE works)
 	 * Instead of config.activate.onProfile, **config.activate.on-profile or CONFIG_ACTIVATE_ON-PROFILE** can be used
 	 * If this property is missing the config is configured to the default
 	 *

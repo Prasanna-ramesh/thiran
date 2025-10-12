@@ -19,7 +19,7 @@
 	},
 	"dependencies": {
 		"express": "5.1.0",
-		"thiran": "0.1.0-alpha.3",
+		"thiran": "0.1.0-alpha.4",
 		"zod": "4.0.17"
 	}
 }

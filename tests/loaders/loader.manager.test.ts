@@ -70,7 +70,7 @@ describe('LoaderManager', () => {
 				activate: {
 					onProfile: 'default, local',
 				},
-				location: defaultConfigurationFileName,
+				file: defaultConfigurationFileName,
 			},
 			port: 3000,
 			logLevels: ['log', 'error', 'warn', 'debug'],
@@ -93,7 +93,7 @@ describe('LoaderManager', () => {
 				activate: {
 					onProfile: 'default, local',
 				},
-				location: 'application.json',
+				file: 'application.json',
 			},
 			port: 3000,
 			logLevels: ['log', 'error', 'warn', 'debug'],

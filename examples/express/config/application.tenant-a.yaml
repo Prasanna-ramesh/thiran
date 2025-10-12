@@ -1,0 +1,24 @@
+config:
+  activate:
+    on-profile:
+      local, development, production
+
+auth:
+  tenant-a:
+    iss: tenant-a
+    jwks: ${auth.serverUrl}/realms/tenant-a/jwks
+    cache-validity: 5 # seconds
+
+messaging:
+  tenant-a:
+    queue-url: https://tenant-a-messaging-queue-url.local
+
+---
+config:
+  activate:
+    on-profile:
+      development,production
+
+messaging:
+  tenant-a:
+    queue-url: https://tenant-a-messaging-queue-url.production

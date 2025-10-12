@@ -1,7 +1,7 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"files": {
-		"includes": ["**", "!dist", "!coverage", "!.changeset"]
+		"includes": ["**", "!dist", "!coverage", "!.changeset", "!docs/.vitepress/cache"]
 	},
 	"linter": {
 		"rules": {
